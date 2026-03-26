@@ -11,7 +11,7 @@ GOALPATH PROJECT ROOT
 ├── 📖 START HERE
 │   ├── DAY_1_SUMMARY.md          ← Overview of what's completed
 │   ├── QUICK_REFERENCE.md        ← Quick lookup guide
-│   └── EXECUTION_PLAN.md         ← Full 7-day timeline
+│   └── EXECUTION_PLAN.md         ← Full 12 week timeline
 │
 ├── 🏗️ ARCHITECTURE & DESIGN
 │   ├── ARCHITECTURE.md           ← System design, security, patterns
