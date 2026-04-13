@@ -1,0 +1,12 @@
+cat > backend/.gitignore << 'EOF'
+node_modules/
+npm-debug.log
+.env
+.DS_Store
+coverage/
+dist/
+build/
+logs/
+*.log
+.nyc_output/
+EOF
