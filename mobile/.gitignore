@@ -1,0 +1,11 @@
+cat > mobile/.gitignore << 'EOF'
+node_modules/
+.expo/
+.expo-shared/
+dist/
+build/
+npm-debug.log
+.env
+.DS_Store
+.env.local
+EOF
