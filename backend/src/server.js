@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log(process.env.MONGODB_URI)
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -87,15 +86,22 @@ app.get('/', (req, res) => {
   });
 });
 
+// Pre-register models to avoid populate errors
+require('./models/User');
+require('./models/Goal');
+require('./models/Milestone');
+require('./models/Habit');
+require('./models/HabitLog');
+
 // ============================================
-// Routes (to be added)
+// Routes
 // ============================================
 
-// TODO: Add routes
-// app.use('/api/auth', require('./routes/authRoutes'));
-// app.use('/api/users', require('./routes/userRoutes'));
-// app.use('/api/goals', require('./routes/goalRoutes'));
-// app.use('/api/habits', require('./routes/habitRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/goals', require('./routes/goalRoutes'));
+app.use('/api/habits', require('./routes/habitRoutes'));
+app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
 // ============================================
 // 404 Handler
