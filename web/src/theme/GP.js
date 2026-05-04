@@ -1,0 +1,15 @@
+export const GP = {
+  bg: '#0a0d12',
+  bg2: '#10151d',
+  line: 'rgba(120,180,255,0.18)',
+  lineStrong: 'rgba(120,180,255,0.4)',
+  ink: '#e6edf7',
+  inkDim: 'rgba(230,237,247,0.55)',
+  inkMute: 'rgba(230,237,247,0.32)',
+  cyan: '#4de3ff',
+  magenta: '#ff3ea5',
+  lime: '#c8ff3e',
+  amber: '#ffb547',
+  mono: '"JetBrains Mono", ui-monospace, monospace',
+  sans: '"Space Grotesk", -apple-system, system-ui, sans-serif',
+};

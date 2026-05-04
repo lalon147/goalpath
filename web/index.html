@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoalPath</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body, #root { height: 100%; margin: 0; padding: 0; }
+    body {
+      background: #0a0d12;
+      color: #e6edf7;
+      font-family: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    * { scrollbar-width: thin; scrollbar-color: rgba(120,180,255,0.2) transparent; }
+    input, textarea, select, button { font-family: inherit; }
+
+    /* Responsive page wrappers */
+    .gp-page { width: 100%; max-width: 800px; padding: 20px 24px; box-sizing: border-box; margin: 0 auto; }
+    .gp-page-sm { width: 100%; max-width: 600px; padding: 20px 24px; box-sizing: border-box; margin: 0 auto; }
+    @media (max-width: 600px) {
+      .gp-page, .gp-page-sm { padding: 16px 14px; }
+    }
+
+    /* Stats / vitals grid */
+    .gp-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+    @media (max-width: 700px) { .gp-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px) { .gp-stats-grid { grid-template-columns: 1fr; } }
+
+    /* Quick action buttons row */
+    .gp-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .gp-actions > button { flex: 1 1 120px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
