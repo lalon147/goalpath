@@ -65,7 +65,7 @@ export default function DashboardPage() {
               ◆ DAY {dayOfYear} / 365
             </Mono>
             <Sans size={20} weight={600}>
-              {user?.firstName ? `Good morning, ${user.firstName}.` : 'Command center.'}
+              {user?.firstName ? `Good morning SIGMA, ${user.firstName}.` : 'Command center.'}
             </Sans>
           </div>
           <Chip>5G · SYNC</Chip>
