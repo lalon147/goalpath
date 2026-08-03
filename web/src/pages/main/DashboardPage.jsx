@@ -61,7 +61,7 @@ export default function DashboardPage() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
           <div>
-            <Mono size={8} accent style={{ letterSpacing: 2, display: 'block', marginBottom: 4 }}>
+            <Mono size={10} accent style={{ letterSpacing: 2, display: 'block', marginBottom: 4 }}>
               ◆ DAY {dayOfYear} / 365
             </Mono>
             <Sans size={20} weight={600}>
@@ -85,7 +85,7 @@ export default function DashboardPage() {
                 padding: '10px 14px',
                 background: GP.bg2,
               }}>
-                <Mono size={7} dim style={{ display: 'block', marginBottom: 4 }}>{m.l}</Mono>
+                <Mono size={10} dim style={{ display: 'block', marginBottom: 4 }}>{m.l}</Mono>
                 <Sans size={22} weight={700} color={m.c}>{m.v}</Sans>
               </div>
             ))}
@@ -125,11 +125,11 @@ export default function DashboardPage() {
                 <g key={i}>
                   <circle cx={nx} cy={ny} r={5} fill="transparent" stroke={g.color} strokeWidth={1} />
                   <text x={nx} y={ny + 13} textAnchor="middle"
-                    fill={g.color} fontSize={6} fontFamily="'JetBrains Mono', monospace" letterSpacing={0.5}>
+                    fill={g.color} fontSize={9} fontFamily="'JetBrains Mono', monospace" letterSpacing={0.5}>
                     {g.label}
                   </text>
                   <text x={nx} y={ny + 21} textAnchor="middle"
-                    fill={GP.inkMute} fontSize={5.5} fontFamily="'JetBrains Mono', monospace">
+                    fill={GP.inkMute} fontSize={8} fontFamily="'JetBrains Mono', monospace">
                     {Math.round(g.p * 100)}%
                   </text>
                 </g>
@@ -137,10 +137,10 @@ export default function DashboardPage() {
             })}
 
             {/* HUD overlays */}
-            <text x={10} y={16} fill={GP.inkMute} fontSize={7} fontFamily="'JetBrains Mono', monospace" letterSpacing={0.5}>
+            <text x={10} y={16} fill={GP.inkMute} fontSize={9} fontFamily="'JetBrains Mono', monospace" letterSpacing={0.5}>
               {`◉ ${orbitalGoals.length} ACTIVE`}
             </text>
-            <text x={10} y={orbH - 10} fill={GP.inkMute} fontSize={7} fontFamily="'JetBrains Mono', monospace">
+            <text x={10} y={orbH - 10} fill={GP.inkMute} fontSize={9} fontFamily="'JetBrains Mono', monospace">
               {`STREAK ${streakDays}D`}
             </text>
           </svg>
@@ -153,12 +153,12 @@ export default function DashboardPage() {
             pointerEvents: 'none',
           }}>
             <Ring size={110} progress={todayProgress}>
-              <Mono size={7} accent style={{ display: 'block' }}>TODAY</Mono>
+              <Mono size={10} accent style={{ display: 'block' }}>TODAY</Mono>
               <Sans size={22} weight={700} style={{ display: 'block', lineHeight: 1.1 }}>
                 {Math.round(todayProgress * 100)}
-                <span style={{ fontSize: 11, opacity: 0.6 }}>%</span>
+                <span style={{ fontSize: 13 }}>%</span>
               </Sans>
-              <Mono size={7} dim style={{ display: 'block', marginTop: 2 }}>{completedToday}</Mono>
+              <Mono size={10} dim style={{ display: 'block', marginTop: 2 }}>{completedToday}</Mono>
             </Ring>
           </div>
         </div>
@@ -173,8 +173,8 @@ export default function DashboardPage() {
             background: GP.bg2,
             borderRadius: 2,
           }}>
-            <Mono size={7} accent style={{ display: 'block', marginBottom: 4 }}>NEXT · TODAY</Mono>
-            <Sans size={13} weight={500}>
+            <Mono size={10} accent style={{ display: 'block', marginBottom: 4 }}>NEXT · TODAY</Mono>
+            <Sans size={15} weight={500}>
               {dashboard?.recentActivity?.[0]?.milestoneTitle || goals[0]?.title || '— no active items —'}
             </Sans>
           </div>
@@ -189,7 +189,7 @@ export default function DashboardPage() {
               background: 'rgba(77,227,255,0.08)',
               border: `1px solid ${GP.line}`,
               borderRadius: 4,
-              fontFamily: GP.mono, fontSize: 9, color: GP.cyan,
+              fontFamily: GP.mono, fontSize: 11, color: GP.cyan,
               letterSpacing: 2, cursor: 'pointer', textTransform: 'uppercase',
             }}
             onMouseEnter={(e) => e.currentTarget.style.borderColor = GP.cyan}
@@ -204,7 +204,7 @@ export default function DashboardPage() {
               background: 'rgba(163,230,53,0.06)',
               border: `1px solid ${GP.line}`,
               borderRadius: 4,
-              fontFamily: GP.mono, fontSize: 9, color: GP.lime,
+              fontFamily: GP.mono, fontSize: 11, color: GP.lime,
               letterSpacing: 2, cursor: 'pointer', textTransform: 'uppercase',
             }}
             onMouseEnter={(e) => e.currentTarget.style.borderColor = GP.lime}
@@ -218,12 +218,12 @@ export default function DashboardPage() {
         {goals.length > 0 && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <Mono size={8}>◆ ACTIVE GOALS</Mono>
+              <Mono size={10}>◆ ACTIVE GOALS</Mono>
               <button
                 onClick={() => navigate('/goals/new')}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontFamily: GP.mono, fontSize: 8, color: GP.cyan, letterSpacing: 1,
+                  fontFamily: GP.mono, fontSize: 11, color: GP.cyan, letterSpacing: 1,
                 }}
               >
                 + NEW
@@ -243,9 +243,9 @@ export default function DashboardPage() {
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <Sans size={12} weight={500}>{g.title}</Sans>
+                    <Sans size={14} weight={500}>{g.title}</Sans>
                     {g.targetDate && (
-                      <Mono size={7} dim>
+                      <Mono size={10} dim>
                         {Math.max(0, Math.round((new Date(g.targetDate) - Date.now()) / 86400000))}D
                       </Mono>
                     )}
@@ -260,7 +260,7 @@ export default function DashboardPage() {
         {/* Empty state */}
         {goals.length === 0 && (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <Mono size={8} dim style={{ display: 'block', marginBottom: 12 }}>◆ NO ACTIVE GOALS</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 12 }}>◆ NO ACTIVE GOALS</Mono>
             <button
               onClick={() => navigate('/goals/new')}
               style={{
@@ -269,7 +269,7 @@ export default function DashboardPage() {
                 borderRadius: 4,
                 padding: '10px 20px',
                 fontFamily: GP.mono,
-                fontSize: 10,
+                fontSize: 12,
                 color: GP.cyan,
                 letterSpacing: 2,
                 cursor: 'pointer',

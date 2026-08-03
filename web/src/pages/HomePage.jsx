@@ -51,7 +51,7 @@ export default function HomePage() {
               background: 'transparent',
               border: `1px solid ${GP.line}`,
               borderRadius: 3,
-              fontFamily: GP.mono, fontSize: 9, color: GP.inkDim,
+              fontFamily: GP.mono, fontSize: 11, color: GP.inkDim,
               letterSpacing: 1, cursor: 'pointer', textTransform: 'uppercase',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = GP.cyan; e.currentTarget.style.color = GP.cyan; }}
@@ -66,7 +66,7 @@ export default function HomePage() {
               background: GP.cyan,
               border: 'none',
               borderRadius: 3,
-              fontFamily: GP.mono, fontSize: 9, color: GP.bg,
+              fontFamily: GP.mono, fontSize: 11, color: GP.bg,
               letterSpacing: 1, cursor: 'pointer', fontWeight: 700, textTransform: 'uppercase',
             }}
           >

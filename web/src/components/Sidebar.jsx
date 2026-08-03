@@ -43,7 +43,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div style={{
         fontFamily: GP.mono,
-        fontSize: 9,
+        fontSize: 11,
         letterSpacing: 2,
         color: GP.cyan,
         marginBottom: 24,
@@ -77,12 +77,12 @@ export default function Sidebar() {
               <>
                 <span style={{
                   fontFamily: GP.mono,
-                  fontSize: 14,
+                  fontSize: 16,
                   color: isActive ? GP.cyan : GP.inkMute,
                 }}>{icon}</span>
                 <span style={{
                   fontFamily: GP.mono,
-                  fontSize: 7,
+                  fontSize: 10,
                   letterSpacing: 1,
                   textTransform: 'uppercase',
                   color: isActive ? GP.cyan : GP.inkMute,
@@ -99,7 +99,7 @@ export default function Sidebar() {
           width: 32, height: 32, borderRadius: '50%',
           border: `1px solid ${GP.lineStrong}`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: GP.mono, fontSize: 10, color: GP.inkDim,
+          fontFamily: GP.mono, fontSize: 12, color: GP.inkDim,
         }}>
           {user?.firstName?.[0]}{user?.lastName?.[0]}
         </div>
@@ -108,7 +108,7 @@ export default function Sidebar() {
           title="Sign out"
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            fontFamily: GP.mono, fontSize: 9, color: GP.inkMute,
+            fontFamily: GP.mono, fontSize: 11, color: GP.inkMute,
             letterSpacing: 1, padding: 4,
           }}
         >
@@ -159,7 +159,7 @@ export function BottomNav() {
                 background: isActive ? 'rgba(77,227,255,0.1)' : 'transparent',
               }} />
               <span style={{
-                fontFamily: GP.mono, fontSize: 7, letterSpacing: 1,
+                fontFamily: GP.mono, fontSize: 10, letterSpacing: 1,
                 textTransform: 'uppercase',
                 color: isActive ? GP.cyan : GP.inkMute,
               }}>{label}</span>

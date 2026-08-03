@@ -46,7 +46,7 @@ export default function SignInPage() {
       <div style={{ width: '100%', maxWidth: 400 }}>
         {/* Header */}
         <div style={{ marginBottom: 40, textAlign: 'center' }}>
-          <Mono size={9} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
+          <Mono size={11} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
             ◆ GOALPATH · AUTH
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>Sign In</Sans>
@@ -62,7 +62,7 @@ export default function SignInPage() {
             padding: '10px 14px',
             marginBottom: 20,
           }}>
-            <Mono size={9} style={{ color: GP.magenta }}>◉ {error}</Mono>
+            <Mono size={11} style={{ color: GP.magenta }}>◉ {error}</Mono>
           </div>
         )}
 
@@ -85,7 +85,7 @@ export default function SignInPage() {
         <div style={{ textAlign: 'center', marginTop: 28 }}>
           <Sans size={13} style={{ color: GP.inkMute }}>
             New?{'  '}
-            <Link to="/signup" style={{ fontFamily: GP.mono, fontSize: 10, color: GP.cyan, letterSpacing: 1, textDecoration: 'none' }}>
+            <Link to="/signup" style={{ fontFamily: GP.mono, fontSize: 12, color: GP.cyan, letterSpacing: 1, textDecoration: 'none' }}>
               CREATE ACCOUNT ▸
             </Link>
           </Sans>

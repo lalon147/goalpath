@@ -58,8 +58,8 @@ export default function CreateHabitPage() {
     <Layout>
       <div className="gp-page-sm">
         <div style={{ marginBottom: 24 }}>
-          <Mono size={8} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / HABITS / NEW</Mono>
-          <Sans size={20} weight={700}>New Habit</Sans>
+          <Mono size={10} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / HABITS / NEW</Mono>
+          <Sans size={22} weight={700}>New Habit</Sans>
         </div>
 
         {error && (
@@ -70,14 +70,14 @@ export default function CreateHabitPage() {
             padding: '10px 14px',
             marginBottom: 16,
           }}>
-            <Mono size={9} style={{ color: GP.magenta }}>◉ {error}</Mono>
+            <Mono size={11} style={{ color: GP.magenta }}>◉ {error}</Mono>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
           {/* Emoji */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>EMOJI</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>EMOJI</Mono>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {EMOJIS.map((em) => (
                 <button
@@ -106,7 +106,7 @@ export default function CreateHabitPage() {
 
           {/* Frequency */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>FREQUENCY</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>FREQUENCY</Mono>
             <div style={{ display: 'flex', gap: 6 }}>
               {FREQUENCIES.map((f) => (
                 <button
@@ -119,7 +119,7 @@ export default function CreateHabitPage() {
                     borderRadius: 3,
                     padding: '4px 14px',
                     fontFamily: GP.mono,
-                    fontSize: 8,
+                    fontSize: 11,
                     color: form.frequency === f ? GP.cyan : GP.inkMute,
                     letterSpacing: 1,
                     cursor: 'pointer',
@@ -135,7 +135,7 @@ export default function CreateHabitPage() {
           {/* Days of week (only for non-daily) */}
           {form.frequency === 'weekly' && (
             <div style={{ marginBottom: 16 }}>
-              <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>DAYS OF WEEK</Mono>
+              <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>DAYS OF WEEK</Mono>
               <div style={{ display: 'flex', gap: 6 }}>
                 {DAYS_OF_WEEK.map((d, i) => (
                   <button
@@ -148,7 +148,7 @@ export default function CreateHabitPage() {
                       borderRadius: 3,
                       padding: '5px 8px',
                       fontFamily: GP.mono,
-                      fontSize: 7,
+                      fontSize: 10,
                       color: form.daysOfWeek.includes(i) ? GP.cyan : GP.inkMute,
                       letterSpacing: 1,
                       cursor: 'pointer',
@@ -163,7 +163,7 @@ export default function CreateHabitPage() {
 
           {/* Category */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>CATEGORY</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>CATEGORY</Mono>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {CATEGORIES.map((c) => (
                 <button
@@ -176,7 +176,7 @@ export default function CreateHabitPage() {
                     borderRadius: 3,
                     padding: '4px 12px',
                     fontFamily: GP.mono,
-                    fontSize: 8,
+                    fontSize: 11,
                     color: form.category === c ? GP.cyan : GP.inkMute,
                     letterSpacing: 1,
                     cursor: 'pointer',
@@ -192,7 +192,7 @@ export default function CreateHabitPage() {
           {/* Target + unit */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 12, marginBottom: 16 }}>
             <div>
-              <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>TARGET</Mono>
+              <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>TARGET</Mono>
               <input
                 type="number"
                 min="1"
@@ -218,7 +218,7 @@ export default function CreateHabitPage() {
 
           {/* Reminder */}
           <div style={{ marginBottom: 20 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>REMINDER TIME (optional)</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>REMINDER TIME (optional)</Mono>
             <input
               type="time"
               value={form.reminderTime}
@@ -250,7 +250,7 @@ export default function CreateHabitPage() {
                 borderRadius: 4,
                 padding: '10px 20px',
                 fontFamily: GP.mono,
-                fontSize: 9,
+                fontSize: 11,
                 color: GP.inkMute,
                 letterSpacing: 2,
                 cursor: 'pointer',

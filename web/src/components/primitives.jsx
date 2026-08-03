@@ -8,7 +8,7 @@ export const Box = ({ children, style, dashed, accent, solid, ...rest }) => (
     borderRadius: 4,
     padding: 8,
     color: GP.ink,
-    fontSize: 11,
+    fontSize: 14,
     ...style,
   }} {...rest}>{children}</div>
 );
@@ -21,7 +21,7 @@ export const Col = ({ children, style, gap = 8, ...rest }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap, ...style }} {...rest}>{children}</div>
 );
 
-export const Mono = ({ children, size = 9, style, dim, accent, ...rest }) => (
+export const Mono = ({ children, size = 11, style, dim, accent, ...rest }) => (
   <span style={{
     fontFamily: GP.mono,
     fontSize: size,
@@ -32,7 +32,7 @@ export const Mono = ({ children, size = 9, style, dim, accent, ...rest }) => (
   }} {...rest}>{children}</span>
 );
 
-export const Sans = ({ children, size = 14, weight = 500, color, style, ...rest }) => (
+export const Sans = ({ children, size = 15, weight = 500, color, style, ...rest }) => (
   <span style={{
     fontFamily: GP.sans,
     fontSize: size,
@@ -54,7 +54,7 @@ export const Chip = ({ children, color, style }) => {
       border: `1px solid ${c}`,
       color: c,
       fontFamily: GP.mono,
-      fontSize: 8,
+      fontSize: 10,
       letterSpacing: 1,
       textTransform: 'uppercase',
       borderRadius: 2,
@@ -127,7 +127,7 @@ export function ScreenHeader({ title, subtitle, right }) {
       marginBottom: 16,
     }}>
       <div>
-        <Mono size={8} accent>◆ {subtitle}</Mono>
+        <Mono size={10} accent>◆ {subtitle}</Mono>
         <div style={{ marginTop: 4 }}>
           <Sans size={20} weight={700}>{title}</Sans>
         </div>
@@ -145,7 +145,7 @@ export function GPInput({ label, value, onChange, placeholder, type = 'text', er
   return (
     <div style={{ marginBottom: 18, ...style }}>
       {label && (
-        <div style={{ fontFamily: GP.mono, fontSize: 8, letterSpacing: 1.5, color: GP.inkMute, marginBottom: 6, textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: GP.mono, fontSize: 11, letterSpacing: 1.5, color: GP.inkMute, marginBottom: 6, textTransform: 'uppercase' }}>
           ◆ {label}
         </div>
       )}
@@ -171,7 +171,7 @@ export function GPInput({ label, value, onChange, placeholder, type = 'text', er
         onBlur={(e) => { e.target.style.borderColor = error ? GP.magenta : GP.line; }}
       />
       {error && (
-        <div style={{ fontFamily: GP.mono, fontSize: 9, color: GP.magenta, marginTop: 4, letterSpacing: 0.5 }}>
+        <div style={{ fontFamily: GP.mono, fontSize: 11, color: GP.magenta, marginTop: 4, letterSpacing: 0.5 }}>
           {error}
         </div>
       )}
@@ -195,7 +195,7 @@ export function GPButton({ children, onClick, variant = 'primary', disabled, loa
         height: 44,
         borderRadius: 4,
         fontFamily: GP.mono,
-        fontSize: 10,
+        fontSize: 12,
         letterSpacing: 2,
         textTransform: 'uppercase',
         cursor: disabled || loading ? 'not-allowed' : 'pointer',

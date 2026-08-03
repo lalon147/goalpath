@@ -31,8 +31,8 @@ export default function AnalyticsPage() {
     <Layout>
       <div className="gp-page">
         <div style={{ marginBottom: 20 }}>
-          <Mono size={8} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / ANALYTICS</Mono>
-          <Sans size={20} weight={700}>Analytics</Sans>
+          <Mono size={10} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / ANALYTICS</Mono>
+          <Sans size={22} weight={700}>Analytics</Sans>
         </div>
 
         {/* Summary stats */}
@@ -50,7 +50,7 @@ export default function AnalyticsPage() {
                 padding: '12px 16px',
                 background: GP.bg2,
               }}>
-                <Mono size={7} dim style={{ display: 'block', marginBottom: 6 }}>{s.l}</Mono>
+                <Mono size={10} dim style={{ display: 'block', marginBottom: 6 }}>{s.l}</Mono>
                 <Sans size={28} weight={700} color={s.c}>{s.v}</Sans>
               </div>
             ))}
@@ -65,7 +65,7 @@ export default function AnalyticsPage() {
           background: GP.bg2,
           marginBottom: 16,
         }}>
-          <Mono size={8} style={{ display: 'block', marginBottom: 14 }}>◆ WEEKLY COMPLETION</Mono>
+          <Mono size={11} style={{ display: 'block', marginBottom: 14 }}>◆ WEEKLY COMPLETION</Mono>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 80 }}>
             {(weekly?.dailyCompletions || weeklyBars).map((item, i) => {
               const val = typeof item === 'object' ? (item.rate || item.value || 0) : item;
@@ -80,7 +80,7 @@ export default function AnalyticsPage() {
                     borderRadius: 2,
                     transition: 'height 0.3s',
                   }} />
-                  <Mono size={6} dim>{day.slice(0, 2).toUpperCase()}</Mono>
+                  <Mono size={9} dim>{day.slice(0, 2).toUpperCase()}</Mono>
                 </div>
               );
             })}
@@ -90,7 +90,7 @@ export default function AnalyticsPage() {
         {/* Goals progress list */}
         {goals.length > 0 && (
           <div style={{ marginBottom: 16 }}>
-            <Mono size={8} style={{ display: 'block', marginBottom: 12 }}>◆ GOALS PROGRESS</Mono>
+            <Mono size={11} style={{ display: 'block', marginBottom: 12 }}>◆ GOALS PROGRESS</Mono>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {goals.map((g) => (
                 <div key={g._id || g.id} style={{
@@ -100,14 +100,14 @@ export default function AnalyticsPage() {
                   background: GP.bg2,
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <Sans size={13} weight={500}>{g.title}</Sans>
-                    <Mono size={7} style={{ color: GP.cyan }}>{g.completionPercentage || 0}%</Mono>
+                    <Sans size={14} weight={500}>{g.title}</Sans>
+                    <Mono size={10} style={{ color: GP.cyan }}>{g.completionPercentage || 0}%</Mono>
                   </div>
                   <ProgressBar value={g.completionPercentage || 0} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-                    <Mono size={7} dim>{g.completedMilestones}/{g.totalMilestones} milestones</Mono>
+                    <Mono size={10} dim>{g.completedMilestones}/{g.totalMilestones} milestones</Mono>
                     {g.targetDate && (
-                      <Mono size={7} dim>
+                      <Mono size={10} dim>
                         {Math.max(0, Math.round((new Date(g.targetDate) - Date.now()) / 86400000))}D LEFT
                       </Mono>
                     )}
@@ -121,7 +121,7 @@ export default function AnalyticsPage() {
         {/* Habit stats */}
         {habitList.length > 0 && (
           <div>
-            <Mono size={8} style={{ display: 'block', marginBottom: 12 }}>◆ HABIT PERFORMANCE</Mono>
+            <Mono size={11} style={{ display: 'block', marginBottom: 12 }}>◆ HABIT PERFORMANCE</Mono>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {habitList.map((h) => (
                 <div key={h._id || h.id} style={{
@@ -136,10 +136,10 @@ export default function AnalyticsPage() {
                   <span style={{ fontSize: 20, lineHeight: 1 }}>{h.emoji || '⚡'}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                      <Sans size={12} weight={500}>{h.name || h.title}</Sans>
+                      <Sans size={14} weight={500}>{h.name || h.title}</Sans>
                       <div style={{ display: 'flex', gap: 12 }}>
-                        <Mono size={7} style={{ color: GP.lime }}>🔥 {h.currentStreak || 0}D</Mono>
-                        <Mono size={7} style={{ color: GP.cyan }}>{Math.round((h.completionRate || 0) * 100)}%</Mono>
+                        <Mono size={10} style={{ color: GP.lime }}>🔥 {h.currentStreak || 0}D</Mono>
+                        <Mono size={10} style={{ color: GP.cyan }}>{Math.round((h.completionRate || 0) * 100)}%</Mono>
                       </div>
                     </div>
                     <ProgressBar value={Math.round((h.completionRate || 0) * 100)} />
@@ -152,13 +152,13 @@ export default function AnalyticsPage() {
 
         {loading && (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <Mono size={9} dim>◉ LOADING…</Mono>
+            <Mono size={11} dim>◉ LOADING…</Mono>
           </div>
         )}
 
         {!loading && !summary && (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <Mono size={8} dim>◆ NO DATA AVAILABLE</Mono>
+            <Mono size={11} dim>◆ NO DATA AVAILABLE</Mono>
           </div>
         )}
       </div>

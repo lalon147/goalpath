@@ -35,8 +35,8 @@ export default function HabitsPage() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
           <div>
-            <Mono size={8} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / HABITS</Mono>
-            <Sans size={20} weight={700}>Habits</Sans>
+            <Mono size={10} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / HABITS</Mono>
+            <Sans size={22} weight={700}>Habits</Sans>
           </div>
           <button
             onClick={() => navigate('/habits/new')}
@@ -46,7 +46,7 @@ export default function HabitsPage() {
               borderRadius: 4,
               padding: '8px 16px',
               fontFamily: GP.mono,
-              fontSize: 9,
+              fontSize: 11,
               color: GP.cyan,
               letterSpacing: 2,
               cursor: 'pointer',
@@ -66,7 +66,7 @@ export default function HabitsPage() {
           borderRadius: 2,
           marginBottom: 16,
         }}>
-          <Mono size={7} accent style={{ display: 'block' }}>
+          <Mono size={10} accent style={{ display: 'block' }}>
             ◉ TODAY — {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase()}
           </Mono>
         </div>
@@ -74,14 +74,14 @@ export default function HabitsPage() {
         {/* Loading */}
         {loading && habits.length === 0 && (
           <div style={{ padding: '40px 0', textAlign: 'center' }}>
-            <Mono size={9} dim>◉ LOADING…</Mono>
+            <Mono size={11} dim>◉ LOADING…</Mono>
           </div>
         )}
 
         {/* Empty */}
         {!loading && habits.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <Mono size={8} dim style={{ display: 'block', marginBottom: 16 }}>◆ NO HABITS TRACKED</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 16 }}>◆ NO HABITS TRACKED</Mono>
             <button
               onClick={() => navigate('/habits/new')}
               style={{
@@ -90,7 +90,7 @@ export default function HabitsPage() {
                 borderRadius: 4,
                 padding: '10px 20px',
                 fontFamily: GP.mono,
-                fontSize: 10,
+                fontSize: 12,
                 color: GP.cyan,
                 letterSpacing: 2,
                 cursor: 'pointer',
@@ -125,7 +125,7 @@ export default function HabitsPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <Sans size={14} weight={600}>{habit.name || habit.title}</Sans>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <Mono size={7} style={{ color: GP.lime }}>🔥 {streak}D</Mono>
+                        <Mono size={10} style={{ color: GP.lime }}>🔥 {streak}D</Mono>
                       </div>
                     </div>
 
@@ -153,7 +153,7 @@ export default function HabitsPage() {
                               border: `1px solid ${isToday ? GP.cyan : GP.line}`,
                               marginBottom: 3,
                             }} />
-                            <Mono size={6} dim>{d}</Mono>
+                            <Mono size={9} dim>{d}</Mono>
                           </div>
                         );
                       })}
@@ -172,7 +172,7 @@ export default function HabitsPage() {
                           borderRadius: 3,
                           padding: '5px 14px',
                           fontFamily: GP.mono,
-                          fontSize: 8,
+                          fontSize: 11,
                           color: logged ? GP.inkMute : GP.cyan,
                           letterSpacing: 1,
                           cursor: logged ? 'default' : 'pointer',
