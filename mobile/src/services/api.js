@@ -1,14 +1,19 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = __DEV__
-  ? 'https://squiggle-hertz-detention.ngrok-free.dev/api'
-  : 'https://goalpath-api.herokuapp.com/api';
+// Point at the ngrok tunnel to the local backend in all build modes.
+// (The Heroku prod backend is not deployed, and the app currently runs as a
+// minified `--no-dev` bundle where __DEV__ is false.)
+const BASE_URL = 'https://squiggle-hertz-detention.ngrok-free.dev/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    // Bypass ngrok-free's HTML interstitial so responses are always JSON.
+    'ngrok-skip-browser-warning': 'true',
+  },
 });
 
 api.interceptors.request.use(async (config) => {

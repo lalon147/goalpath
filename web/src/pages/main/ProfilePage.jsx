@@ -39,8 +39,8 @@ export default function ProfilePage() {
     <Layout>
       <div className="gp-page-sm">
         <div style={{ marginBottom: 24 }}>
-          <Mono size={8} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / PROFILE</Mono>
-          <Sans size={20} weight={700}>Profile</Sans>
+          <Mono size={10} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / PROFILE</Mono>
+          <Sans size={22} weight={700}>Profile</Sans>
         </div>
 
         {/* Avatar card */}
@@ -71,7 +71,7 @@ export default function ProfilePage() {
             <Sans size={18} weight={700} style={{ display: 'block', marginBottom: 4 }}>
               {user ? `${user.firstName} ${user.lastName}` : '—'}
             </Sans>
-            <Mono size={8} dim style={{ display: 'block', marginBottom: 6 }}>{user?.email || '—'}</Mono>
+            <Mono size={11} dim style={{ display: 'block', marginBottom: 6 }}>{user?.email || '—'}</Mono>
             <Chip color={GP.cyan}>MEMBER SINCE {memberSince.toUpperCase()}</Chip>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function ProfilePage() {
                 background: GP.bg2,
                 textAlign: 'center',
               }}>
-                <Mono size={7} dim style={{ display: 'block', marginBottom: 4 }}>{s.l}</Mono>
+                <Mono size={10} dim style={{ display: 'block', marginBottom: 4 }}>{s.l}</Mono>
                 <Sans size={22} weight={700} color={s.c}>{s.v}</Sans>
               </div>
             ))}
@@ -124,7 +124,7 @@ export default function ProfilePage() {
               <Mono size={12} style={{ color: GP.inkMute, minWidth: 16 }}>{item.icon}</Mono>
               <div style={{ flex: 1 }}>
                 <Sans size={13} weight={500}>{item.label}</Sans>
-                <Mono size={7} dim style={{ display: 'block', marginTop: 2 }}>{item.desc}</Mono>
+                <Mono size={10} dim style={{ display: 'block', marginTop: 2 }}>{item.desc}</Mono>
               </div>
               <Mono size={10} dim>▸</Mono>
             </div>
@@ -141,7 +141,7 @@ export default function ProfilePage() {
         }}>
           {confirmSignout ? (
             <div style={{ padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
-              <Mono size={9} style={{ color: GP.magenta, flex: 1 }}>Confirm sign out?</Mono>
+              <Mono size={11} style={{ color: GP.magenta, flex: 1 }}>Confirm sign out?</Mono>
               <button
                 onClick={handleSignout}
                 style={{
@@ -150,7 +150,7 @@ export default function ProfilePage() {
                   borderRadius: 3,
                   padding: '5px 14px',
                   fontFamily: GP.mono,
-                  fontSize: 8,
+                  fontSize: 11,
                   color: GP.magenta,
                   letterSpacing: 1,
                   cursor: 'pointer',
@@ -166,7 +166,7 @@ export default function ProfilePage() {
                   borderRadius: 3,
                   padding: '5px 14px',
                   fontFamily: GP.mono,
-                  fontSize: 8,
+                  fontSize: 11,
                   color: GP.inkMute,
                   letterSpacing: 1,
                   cursor: 'pointer',
@@ -195,7 +195,7 @@ export default function ProfilePage() {
           )}
         </div>
 
-        <Mono size={7} dim style={{ display: 'block', textAlign: 'center' }}>
+        <Mono size={10} dim style={{ display: 'block', textAlign: 'center' }}>
           GOALPATH · BUILD 1.0 · {new Date().getFullYear()}
         </Mono>
       </div>

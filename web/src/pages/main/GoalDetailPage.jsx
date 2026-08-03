@@ -35,7 +35,7 @@ export default function GoalDetailPage() {
     return (
       <Layout>
         <div style={{ padding: '40px 24px', textAlign: 'center' }}>
-          <Mono size={9} dim>◉ LOADING…</Mono>
+          <Mono size={11} dim>◉ LOADING…</Mono>
         </div>
       </Layout>
     );
@@ -45,7 +45,7 @@ export default function GoalDetailPage() {
     return (
       <Layout>
         <div style={{ padding: '40px 24px', textAlign: 'center' }}>
-          <Mono size={9} dim>◆ GOAL NOT FOUND</Mono>
+          <Mono size={11} dim>◆ GOAL NOT FOUND</Mono>
         </div>
       </Layout>
     );
@@ -80,7 +80,7 @@ export default function GoalDetailPage() {
           onClick={() => navigate('/goals')}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            fontFamily: GP.mono, fontSize: 8, color: GP.inkMute,
+            fontFamily: GP.mono, fontSize: 11, color: GP.inkMute,
             letterSpacing: 1, padding: 0, marginBottom: 16,
           }}
         >
@@ -91,7 +91,7 @@ export default function GoalDetailPage() {
         <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start', marginBottom: 20 }}>
           <span style={{ fontSize: 40, lineHeight: 1 }}>{goal.emoji || '🎯'}</span>
           <div style={{ flex: 1 }}>
-            <Mono size={7} accent style={{ display: 'block', marginBottom: 4, letterSpacing: 2 }}>
+            <Mono size={10} accent style={{ display: 'block', marginBottom: 4, letterSpacing: 2 }}>
               ◆ GOAL · {goal.category?.toUpperCase() || 'GENERAL'}
             </Mono>
             <Sans size={22} weight={700} style={{ display: 'block', marginBottom: 8 }}>{goal.title}</Sans>
@@ -109,7 +109,7 @@ export default function GoalDetailPage() {
             <Ring size={100} progress={progress}>
               <Sans size={20} weight={700} style={{ display: 'block', lineHeight: 1 }}>
                 {goal.completionPercentage || 0}
-                <span style={{ fontSize: 10, opacity: 0.5 }}>%</span>
+                <span style={{ fontSize: 13 }}>%</span>
               </Sans>
             </Ring>
           </div>
@@ -128,7 +128,7 @@ export default function GoalDetailPage() {
               padding: '10px 14px',
               background: GP.bg2,
             }}>
-              <Mono size={7} dim style={{ display: 'block', marginBottom: 4 }}>{s.l}</Mono>
+              <Mono size={10} dim style={{ display: 'block', marginBottom: 4 }}>{s.l}</Mono>
               <Sans size={20} weight={700} color={s.c}>{s.v}</Sans>
             </div>
           ))}
@@ -143,8 +143,8 @@ export default function GoalDetailPage() {
             background: GP.bg2,
             marginBottom: 16,
           }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 6 }}>◆ DESCRIPTION</Mono>
-            <Sans size={13} style={{ color: GP.inkDim, lineHeight: 1.6 }}>{goal.description}</Sans>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 6 }}>◆ DESCRIPTION</Mono>
+            <Sans size={15} style={{ color: GP.inkDim, lineHeight: 1.6 }}>{goal.description}</Sans>
           </div>
         )}
 
@@ -157,8 +157,8 @@ export default function GoalDetailPage() {
           marginBottom: 16,
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-            <Mono size={7} dim>◆ PACE CHART</Mono>
-            <Mono size={7} dim>{completedMilestones} DONE</Mono>
+            <Mono size={10} dim>◆ PACE CHART</Mono>
+            <Mono size={10} dim>{completedMilestones} DONE</Mono>
           </div>
           <svg width="100%" viewBox={`0 0 ${chartW} ${chartH}`} style={{ display: 'block' }}>
             {/* Grid lines */}
@@ -183,7 +183,7 @@ export default function GoalDetailPage() {
         {/* Milestones */}
         {milestones.length > 0 && (
           <div style={{ marginBottom: 16 }}>
-            <Mono size={8} style={{ display: 'block', marginBottom: 10 }}>◆ MILESTONES</Mono>
+            <Mono size={11} style={{ display: 'block', marginBottom: 10 }}>◆ MILESTONES</Mono>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {milestones.map((m) => (
                 <div
@@ -221,11 +221,11 @@ export default function GoalDetailPage() {
                       {m.title}
                     </Sans>
                     {m.description && (
-                      <Mono size={7} dim style={{ display: 'block', marginTop: 2 }}>{m.description}</Mono>
+                      <Mono size={10} dim style={{ display: 'block', marginTop: 2 }}>{m.description}</Mono>
                     )}
                   </div>
                   {m.targetDate && (
-                    <Mono size={7} dim>
+                    <Mono size={10} dim>
                       {new Date(m.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </Mono>
                   )}
@@ -246,8 +246,8 @@ export default function GoalDetailPage() {
             borderRadius: 2,
             marginBottom: 16,
           }}>
-            <Mono size={7} style={{ color: GP.magenta, display: 'block', marginBottom: 6 }}>◆ COACH BRIEF</Mono>
-            <Sans size={13} style={{ color: GP.inkDim, lineHeight: 1.6 }}>{goal.coachBrief}</Sans>
+            <Mono size={10} style={{ color: GP.magenta, display: 'block', marginBottom: 6 }}>◆ COACH BRIEF</Mono>
+            <Sans size={15} style={{ color: GP.inkDim, lineHeight: 1.6 }}>{goal.coachBrief}</Sans>
           </div>
         )}
 
@@ -261,7 +261,7 @@ export default function GoalDetailPage() {
               borderRadius: 4,
               padding: '8px 20px',
               fontFamily: GP.mono,
-              fontSize: 9,
+              fontSize: 11,
               color: GP.cyan,
               letterSpacing: 2,
               cursor: 'pointer',
@@ -271,7 +271,7 @@ export default function GoalDetailPage() {
           </button>
           {confirmDelete ? (
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <Mono size={8} style={{ color: GP.magenta }}>Confirm delete?</Mono>
+              <Mono size={11} style={{ color: GP.magenta }}>Confirm delete?</Mono>
               <button
                 onClick={handleDelete}
                 style={{
@@ -280,7 +280,7 @@ export default function GoalDetailPage() {
                   borderRadius: 4,
                   padding: '8px 16px',
                   fontFamily: GP.mono,
-                  fontSize: 9,
+                  fontSize: 11,
                   color: GP.magenta,
                   letterSpacing: 2,
                   cursor: 'pointer',
@@ -296,7 +296,7 @@ export default function GoalDetailPage() {
                   borderRadius: 4,
                   padding: '8px 16px',
                   fontFamily: GP.mono,
-                  fontSize: 9,
+                  fontSize: 11,
                   color: GP.inkMute,
                   letterSpacing: 2,
                   cursor: 'pointer',
@@ -314,7 +314,7 @@ export default function GoalDetailPage() {
                 borderRadius: 4,
                 padding: '8px 20px',
                 fontFamily: GP.mono,
-                fontSize: 9,
+                fontSize: 11,
                 color: GP.inkMute,
                 letterSpacing: 2,
                 cursor: 'pointer',

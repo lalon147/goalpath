@@ -30,8 +30,8 @@ export default function GoalsPage() {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
           <div>
-            <Mono size={8} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / GOALS</Mono>
-            <Sans size={20} weight={700}>Goals</Sans>
+            <Mono size={10} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / GOALS</Mono>
+            <Sans size={22} weight={700}>Goals</Sans>
           </div>
           <button
             onClick={() => navigate('/goals/new')}
@@ -41,7 +41,7 @@ export default function GoalsPage() {
               borderRadius: 4,
               padding: '8px 16px',
               fontFamily: GP.mono,
-              fontSize: 9,
+              fontSize: 11,
               color: GP.cyan,
               letterSpacing: 2,
               cursor: 'pointer',
@@ -63,7 +63,7 @@ export default function GoalsPage() {
                 borderRadius: 3,
                 padding: '4px 12px',
                 fontFamily: GP.mono,
-                fontSize: 8,
+                fontSize: 11,
                 color: filter === f ? GP.cyan : GP.inkMute,
                 letterSpacing: 1,
                 cursor: 'pointer',
@@ -78,14 +78,14 @@ export default function GoalsPage() {
         {/* Loading */}
         {loading && goals.length === 0 && (
           <div style={{ padding: '40px 0', textAlign: 'center' }}>
-            <Mono size={9} dim>◉ LOADING…</Mono>
+            <Mono size={11} dim>◉ LOADING…</Mono>
           </div>
         )}
 
         {/* Empty */}
         {!loading && goals.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <Mono size={8} dim style={{ display: 'block', marginBottom: 16 }}>◆ NO GOALS FOUND</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 16 }}>◆ NO GOALS FOUND</Mono>
             <button
               onClick={() => navigate('/goals/new')}
               style={{
@@ -94,7 +94,7 @@ export default function GoalsPage() {
                 borderRadius: 4,
                 padding: '10px 20px',
                 fontFamily: GP.mono,
-                fontSize: 10,
+                fontSize: 12,
                 color: GP.cyan,
                 letterSpacing: 2,
                 cursor: 'pointer',
@@ -127,7 +127,7 @@ export default function GoalsPage() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                     <Sans size={14} weight={600}>{goal.title}</Sans>
-                    <Mono size={7} dim>
+                    <Mono size={10} dim>
                       {goal.targetDate
                         ? `${Math.max(0, Math.round((new Date(goal.targetDate) - Date.now()) / 86400000))}D`
                         : '—'}
@@ -152,10 +152,10 @@ export default function GoalsPage() {
               </div>
               <ProgressBar value={goal.completionPercentage || 0} />
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
-                <Mono size={7} dim>
+                <Mono size={10} dim>
                   {goal.completedMilestones}/{goal.totalMilestones} milestones
                 </Mono>
-                <Mono size={7} style={{ color: GP.cyan }}>
+                <Mono size={10} style={{ color: GP.cyan }}>
                   {goal.completionPercentage || 0}%
                 </Mono>
               </div>

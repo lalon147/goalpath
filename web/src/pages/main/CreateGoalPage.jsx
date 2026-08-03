@@ -70,8 +70,8 @@ export default function CreateGoalPage() {
       <div className="gp-page-sm">
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
-          <Mono size={8} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / GOALS / NEW</Mono>
-          <Sans size={20} weight={700}>Define Goal</Sans>
+          <Mono size={10} accent style={{ display: 'block', marginBottom: 6, letterSpacing: 2 }}>◆ PATH / GOALS / NEW</Mono>
+          <Sans size={22} weight={700}>Define Goal</Sans>
         </div>
 
         {error && (
@@ -82,14 +82,14 @@ export default function CreateGoalPage() {
             padding: '10px 14px',
             marginBottom: 16,
           }}>
-            <Mono size={9} style={{ color: GP.magenta }}>◉ {error}</Mono>
+            <Mono size={11} style={{ color: GP.magenta }}>◉ {error}</Mono>
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
           {/* Emoji picker */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>EMOJI</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>EMOJI</Mono>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {EMOJIS.map((em) => (
                 <button
@@ -118,7 +118,7 @@ export default function CreateGoalPage() {
 
           {/* Category */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>
               CATEGORY {errors.category && <span style={{ color: GP.magenta }}>— {errors.category}</span>}
             </Mono>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -133,7 +133,7 @@ export default function CreateGoalPage() {
                     borderRadius: 3,
                     padding: '4px 12px',
                     fontFamily: GP.mono,
-                    fontSize: 8,
+                    fontSize: 11,
                     color: form.category === c ? CATEGORY_COLORS[c] : GP.inkMute,
                     letterSpacing: 1,
                     cursor: 'pointer',
@@ -148,7 +148,7 @@ export default function CreateGoalPage() {
 
           {/* Priority */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>PRIORITY</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>PRIORITY</Mono>
             <div style={{ display: 'flex', gap: 6 }}>
               {PRIORITIES.map((p) => (
                 <button
@@ -161,7 +161,7 @@ export default function CreateGoalPage() {
                     borderRadius: 3,
                     padding: '4px 12px',
                     fontFamily: GP.mono,
-                    fontSize: 8,
+                    fontSize: 11,
                     color: form.priority === p ? PRIORITY_COLORS[p] : GP.inkMute,
                     letterSpacing: 1,
                     cursor: 'pointer',
@@ -176,7 +176,7 @@ export default function CreateGoalPage() {
 
           {/* Type */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>TYPE</Mono>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>TYPE</Mono>
             <div style={{ display: 'flex', gap: 6 }}>
               {TYPES.map((t) => (
                 <button
@@ -189,7 +189,7 @@ export default function CreateGoalPage() {
                     borderRadius: 3,
                     padding: '4px 12px',
                     fontFamily: GP.mono,
-                    fontSize: 8,
+                    fontSize: 11,
                     color: form.type === t ? GP.cyan : GP.inkMute,
                     letterSpacing: 1,
                     cursor: 'pointer',
@@ -204,7 +204,7 @@ export default function CreateGoalPage() {
 
           {/* Target date */}
           <div style={{ marginBottom: 16 }}>
-            <Mono size={7} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>
+            <Mono size={10} dim style={{ display: 'block', marginBottom: 8, letterSpacing: 1 }}>
               TARGET DATE {errors.targetDate && <span style={{ color: GP.magenta }}>— {errors.targetDate}</span>}
             </Mono>
             <input
@@ -228,13 +228,13 @@ export default function CreateGoalPage() {
           {/* Milestones */}
           <div style={{ marginBottom: 20 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <Mono size={7} dim style={{ letterSpacing: 1 }}>MILESTONES</Mono>
+              <Mono size={10} dim style={{ letterSpacing: 1 }}>MILESTONES</Mono>
               <button
                 type="button"
                 onClick={addMilestone}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer',
-                  fontFamily: GP.mono, fontSize: 8, color: GP.cyan, letterSpacing: 1,
+                  fontFamily: GP.mono, fontSize: 11, color: GP.cyan, letterSpacing: 1,
                 }}
               >
                 + ADD
@@ -243,7 +243,7 @@ export default function CreateGoalPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {milestones.map((m, i) => (
                 <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                  <Mono size={9} style={{ color: GP.inkMute, paddingTop: 12, minWidth: 16 }}>
+                  <Mono size={11} style={{ color: GP.inkMute, paddingTop: 12, minWidth: 16 }}>
                     {i + 1}.
                   </Mono>
                   <div style={{ flex: 1 }}>
@@ -296,7 +296,7 @@ export default function CreateGoalPage() {
                 borderRadius: 4,
                 padding: '10px 20px',
                 fontFamily: GP.mono,
-                fontSize: 9,
+                fontSize: 11,
                 color: GP.inkMute,
                 letterSpacing: 2,
                 cursor: 'pointer',

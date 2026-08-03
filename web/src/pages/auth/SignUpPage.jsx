@@ -51,7 +51,7 @@ export default function SignUpPage() {
     }}>
       <div style={{ width: '100%', maxWidth: 440 }}>
         <div style={{ marginBottom: 32, textAlign: 'center' }}>
-          <Mono size={9} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
+          <Mono size={11} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
             ◆ GOALPATH · REGISTER
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>Create Account</Sans>
@@ -66,7 +66,7 @@ export default function SignUpPage() {
             padding: '10px 14px',
             marginBottom: 20,
           }}>
-            <Mono size={9} style={{ color: GP.magenta }}>◉ {error}</Mono>
+            <Mono size={11} style={{ color: GP.magenta }}>◉ {error}</Mono>
           </div>
         )}
 
@@ -98,7 +98,7 @@ export default function SignUpPage() {
         <div style={{ textAlign: 'center', marginTop: 24 }}>
           <Sans size={13} style={{ color: GP.inkMute }}>
             Already a member?{'  '}
-            <Link to="/signin" style={{ fontFamily: GP.mono, fontSize: 10, color: GP.cyan, letterSpacing: 1, textDecoration: 'none' }}>
+            <Link to="/signin" style={{ fontFamily: GP.mono, fontSize: 12, color: GP.cyan, letterSpacing: 1, textDecoration: 'none' }}>
               SIGN IN ▸
             </Link>
           </Sans>
