@@ -7,6 +7,17 @@ const logger = require('./utils/logger');
 
 const app = express();
 
+// Surface crashes that would otherwise kill the process without explanation.
+process.on('unhandledRejection', err => {
+  logger.error('❌ Unhandled promise rejection:', err && err.stack ? err.stack : err);
+  process.exit(1);
+});
+
+process.on('uncaughtException', err => {
+  logger.error('❌ Uncaught exception:', err && err.stack ? err.stack : err);
+  process.exit(1);
+});
+
 // ============================================
 // Middleware Setup
 // ============================================
@@ -35,10 +46,12 @@ app.use(limiter);
 // Database Connection
 // ============================================
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+if (!process.env.MONGODB_URI) {
+  logger.error('❌ MONGODB_URI is not set. Configure it in the environment before starting the server.');
+  process.exit(1);
+}
+
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     logger.info('✅ MongoDB Atlas connected successfully');
   })
