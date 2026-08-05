@@ -17,9 +17,11 @@ import ProfilePage from './pages/main/ProfilePage';
 
 export default function App() {
   const dispatch = useDispatch();
+  // Always dispatch: loadUser rejects early (without a network call) when there
+  // is no stored token, and that rejection is what clears `initializing`.
+  // Skipping the dispatch leaves logged-out visitors stuck on the loading screen.
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (token) dispatch(loadUser());
+    dispatch(loadUser());
   }, [dispatch]);
 
   return (

@@ -13,6 +13,7 @@ dashboards and in the gitignored `backend/.env`.
 | File | What it covers |
 |------|----------------|
 | [`2026-08-05-restore-deployment.md`](2026-08-05-restore-deployment.md) | The change record for restoring the broken deployment |
+| [`2026-08-05-fix-stuck-loading-screen.md`](2026-08-05-fix-stuck-loading-screen.md) | Fix for the web app hanging on `◉ LOADING…` |
 | [`environment-variables.md`](environment-variables.md) | Inventory of every env var on every platform |
 | [`runbook.md`](runbook.md) | How to redeploy, diagnose, and recover |
 

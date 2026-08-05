@@ -21,7 +21,14 @@ curl -s https://goalpath.onrender.com/api/health
 # 3. Is the web app up?
 curl -s -o /dev/null -w "%{http_code}\n" https://goalpath-web.vercel.app/
 
-# 4. Does the browser origin pass CORS?
+# 4. Does the page actually RENDER? A 200 does not mean the app works —
+#    React failures happen after the HTML shell is served.
+google-chrome --headless --no-sandbox --disable-gpu \
+  --virtual-time-budget=10000 --dump-dom https://goalpath-web.vercel.app/ \
+  | grep -o 'LOADING…\|Get Started'
+#    "Get Started" -> rendering fine.  "LOADING…" only -> app is stuck.
+
+# 5. Does the browser origin pass CORS?
 curl -s -i -X OPTIONS https://goalpath.onrender.com/api/auth/signup \
   -H "Origin: https://goalpath-web.vercel.app" \
   -H "Access-Control-Request-Method: POST" | grep -i access-control-allow-origin
@@ -38,6 +45,7 @@ curl -s -i -X OPTIONS https://goalpath.onrender.com/api/auth/signup \
 | Web app calls the *wrong* API URL | Stale bundle — `VITE_API_URL` is inlined at build time | **Redeploy**; changing the env var alone does nothing |
 | 404 on every API call | `VITE_API_URL` missing the `/api` suffix | Correct it, then redeploy |
 | First request after idle takes ~60s | Render free-tier cold start | Expected behaviour |
+| Page renders only `◉ LOADING…` or `◉ INITIALIZING…` | Redux `auth.initializing` never cleared | See [`2026-08-05-fix-stuck-loading-screen.md`](2026-08-05-fix-stuck-loading-screen.md). Nothing to do with hosting — `curl` returns 200 while the page is broken |
 
 ## Redeploying
 
