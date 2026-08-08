@@ -4,7 +4,10 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  // The backend sleeps when idle and can take ~30s to wake, which is longer
+  // than the first request would otherwise be allowed to wait. A 10s timeout
+  // aborted every sign-up/sign-in that landed on a cold backend.
+  timeout: 60000,
   headers: { 'Content-Type': 'application/json' },
 });
 
