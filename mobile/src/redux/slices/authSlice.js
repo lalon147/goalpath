@@ -2,6 +2,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authAPI, userAPI } from '../../services/api';
 
+// A timed-out or unreachable request has no `response`, so falling straight
+// through to the generic message hid the difference between "the server said
+// no" and "the server never answered". The waking-up wording matters because
+// the backend sleeps when idle and the retry usually succeeds.
+const errorMessage = (err, fallback) => {
+  if (err.response?.data?.error?.message) return err.response.data.error.message;
+  if (err.code === 'ECONNABORTED') return 'Server is waking up — please try again in a moment';
+  if (!err.response) return 'Cannot reach the server — check your connection and try again';
+  return fallback;
+};
+
 export const signin = createAsyncThunk('auth/signin', async (credentials, { rejectWithValue }) => {
   try {
     const { data } = await authAPI.signin(credentials);
@@ -9,7 +20,7 @@ export const signin = createAsyncThunk('auth/signin', async (credentials, { reje
     await AsyncStorage.setItem('refreshToken', data.data.tokens.refreshToken);
     return data.data;
   } catch (err) {
-    return rejectWithValue(err.response?.data?.error?.message || 'Sign in failed');
+    return rejectWithValue(errorMessage(err, 'Sign in failed'));
   }
 });
 
@@ -20,7 +31,7 @@ export const signup = createAsyncThunk('auth/signup', async (userData, { rejectW
     await AsyncStorage.setItem('refreshToken', data.data.tokens.refreshToken);
     return data.data;
   } catch (err) {
-    return rejectWithValue(err.response?.data?.error?.message || 'Sign up failed');
+    return rejectWithValue(errorMessage(err, 'Sign up failed'));
   }
 });
 

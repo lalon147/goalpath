@@ -1,19 +1,17 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Point at the ngrok tunnel to the local backend in all build modes.
-// (The Heroku prod backend is not deployed, and the app currently runs as a
-// minified `--no-dev` bundle where __DEV__ is false.)
-const BASE_URL = 'https://squiggle-hertz-detention.ngrok-free.dev/api';
+// Point at the hosted backend in all build modes. This must be a public URL:
+// the app runs on a phone, so localhost and LAN addresses are unreachable, and
+// release bundles run with __DEV__ false.
+const BASE_URL = 'https://goalpath.onrender.com/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-    // Bypass ngrok-free's HTML interstitial so responses are always JSON.
-    'ngrok-skip-browser-warning': 'true',
-  },
+  // The backend sleeps when idle and can take ~30s to wake, which is longer
+  // than the first request would otherwise be allowed to wait.
+  timeout: 60000,
+  headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use(async (config) => {
