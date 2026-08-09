@@ -6,6 +6,8 @@ import PrivateRoute from './components/PrivateRoute';
 import HomePage from './pages/HomePage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import DashboardPage from './pages/main/DashboardPage';
 import GoalsPage from './pages/main/GoalsPage';
 import GoalDetailPage from './pages/main/GoalDetailPage';
@@ -29,6 +31,8 @@ export default function App() {
       {/* Auth */}
       <Route path="/signin" element={<SignInPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Protected */}
       <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />

@@ -38,7 +38,12 @@ app.use(express.urlencoded({ extended: true }));
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 60000,
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-  message: 'Too many requests from this IP, please try again later'
+  // Must be JSON in the same shape as every other error: the clients read
+  // error.message, so a bare string surfaced as a generic "request failed".
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many requests. Please try again in a minute.' }
+  }
 });
 app.use(limiter);
 

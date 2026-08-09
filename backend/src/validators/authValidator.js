@@ -22,6 +22,15 @@ exports.refreshSchema = Joi.object({
   refreshToken: Joi.string().required()
 });
 
+exports.forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required()
+});
+
+exports.resetPasswordSchema = Joi.object({
+  token: Joi.string().hex().length(64).required(),
+  newPassword: passwordRules.required()
+});
+
 exports.changePasswordSchema = Joi.object({
   currentPassword: Joi.string().required(),
   newPassword: passwordRules.required()
