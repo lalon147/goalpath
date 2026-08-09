@@ -82,7 +82,13 @@ export default function SignInPage() {
           </GPButton>
         </form>
 
-        <div style={{ textAlign: 'center', marginTop: 28 }}>
+        <div style={{ textAlign: 'center', marginTop: 18 }}>
+          <Link to="/forgot-password" style={{ fontFamily: GP.mono, fontSize: 11, color: GP.inkMute, letterSpacing: 1, textDecoration: 'none' }}>
+            FORGOT PASSWORD?
+          </Link>
+        </div>
+
+        <div style={{ textAlign: 'center', marginTop: 20 }}>
           <Sans size={13} style={{ color: GP.inkMute }}>
             New?{'  '}
             <Link to="/signup" style={{ fontFamily: GP.mono, fontSize: 12, color: GP.cyan, letterSpacing: 1, textDecoration: 'none' }}>

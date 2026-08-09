@@ -44,6 +44,7 @@ export const authAPI = {
   signup: (data) => api.post('/auth/signup', data),
   signin: (data) => api.post('/auth/signin', data),
   logout: (refreshToken) => api.post('/auth/logout', { refreshToken }),
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
 };
 
 export const userAPI = {

@@ -93,6 +93,10 @@ export default function SignInScreen({ navigation }) {
             <Text style={styles.signInBtnText}>{loading ? 'SIGNING IN…' : '◉ SIGN IN'}</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.forgotRow} onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotText}>FORGOT PASSWORD?</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.linkRow} onPress={() => navigation.navigate('SignUp')}>
             <Text style={styles.linkText}>
               New?{'  '}
@@ -153,7 +157,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   signInBtnText: { fontFamily: GP.mono, fontSize: 11, letterSpacing: 2, color: GP.cyan },
-  linkRow: { alignItems: 'center', marginTop: 28 },
+  forgotRow: { alignItems: 'center', marginTop: 18 },
+  forgotText: { fontFamily: GP.mono, fontSize: 9, letterSpacing: 1.5, color: GP.inkMute },
+  linkRow: { alignItems: 'center', marginTop: 20 },
   linkText: { fontFamily: GP.sans, fontSize: 13, color: GP.inkMute },
   link: { fontFamily: GP.mono, fontSize: 10, color: GP.cyan, letterSpacing: 1 },
 });

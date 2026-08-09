@@ -15,7 +15,7 @@ function MenuItem({ label, onPress, danger }) {
   );
 }
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const { user } = useSelector((s) => s.auth);
   const { dashboard } = useSelector((s) => s.analytics);
@@ -81,7 +81,7 @@ export default function ProfileScreen() {
         <GPBox style={styles.menuCard}>
           <Mono size={7} dim style={styles.menuSection}>SETTINGS</Mono>
           <MenuItem label="Edit Profile" onPress={() => {}} />
-          <MenuItem label="Notifications" onPress={() => {}} />
+          <MenuItem label="Notifications" onPress={() => navigation.navigate('NotificationSettings')} />
           <MenuItem label="Privacy & Security" onPress={() => {}} />
         </GPBox>
 

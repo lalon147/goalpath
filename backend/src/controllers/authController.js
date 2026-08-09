@@ -1,6 +1,14 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
 const asyncHandler = require('../middleware/asyncHandler');
+const { sendPasswordReset } = require('../utils/mailer');
+
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
+
+// Only the hash is stored, so a leaked database dump cannot be used to reset
+// anyone's password — the same reason the login password itself is hashed.
+const hashResetToken = (token) => crypto.createHash('sha256').update(token).digest('hex');
 
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ id: userId }, process.env.JWT_ACCESS_SECRET, {
@@ -112,6 +120,60 @@ exports.refresh = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: true,
     data: { accessToken, expiresIn: 3600 }
+  });
+});
+
+exports.forgotPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  // Always answer the same way. Varying the response by whether the address
+  // exists would turn this endpoint into a way to enumerate registered users.
+  if (user) {
+    const rawToken = crypto.randomBytes(32).toString('hex');
+
+    // One live token per user: issuing a new link invalidates any earlier one.
+    user.resetTokens = [{
+      token: hashResetToken(rawToken),
+      expiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS)
+    }];
+    await user.save();
+
+    await sendPasswordReset(user.email, rawToken);
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: 'If that email is registered, a reset link has been sent'
+  });
+});
+
+exports.resetPassword = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+  const hashed = hashResetToken(token);
+
+  const user = await User.findOne({
+    'resetTokens.token': hashed,
+    'resetTokens.expiresAt': { $gt: new Date() }
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      error: { code: 'INVALID_TOKEN', message: 'Reset link is invalid or has expired' }
+    });
+  }
+
+  user.password = newPassword;
+  user.resetTokens = [];
+  // A password reset is the remedy for a compromised account, so every existing
+  // session has to die with it — otherwise an intruder keeps their refresh token.
+  user.refreshTokens = [];
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    message: 'Password has been reset. Please sign in with your new password.'
   });
 });
 
