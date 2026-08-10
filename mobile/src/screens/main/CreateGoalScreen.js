@@ -6,8 +6,18 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import { createGoal, updateGoal } from '../../redux/slices/goalsSlice';
+import { createHabit } from '../../redux/slices/habitsSlice';
+import { milestonesAPI } from '../../services/api';
+import {
+  inferGoalFields,
+  suggestTitles,
+  suggestMilestones,
+  suggestHabits,
+  fetchAIIdeas,
+} from '../../services/suggestions';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, GPBox, GPRow } from '../../components/gp/primitives';
+import { TitleSuggest, SuggestionPanel } from '../../components/gp/Suggest';
 
 const CATEGORIES = ['learning', 'health', 'career', 'personal', 'financial'];
 const PRIORITIES = ['low', 'medium', 'high'];
@@ -42,7 +52,61 @@ export default function CreateGoalScreen({ route, navigation }) {
   const [descFocused, setDescFocused] = useState(false);
   const [dateFocused, setDateFocused] = useState(false);
 
-  const set = (field) => (val) => setForm((f) => ({ ...f, [field]: val }));
+  // Which fields the user has set themselves. The engine only fills what they
+  // haven't touched, so a guess never overwrites a deliberate choice.
+  const [touched, setTouched] = useState({});
+  const [pickedMilestones, setPickedMilestones] = useState([]);
+  const [pickedHabits, setPickedHabits] = useState([]);
+  const [aiMilestones, setAiMilestones] = useState(null);
+  const [moreState, setMoreState] = useState('idle');
+
+  const set = (field) => (val) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setForm((f) => ({ ...f, [field]: val }));
+  };
+
+  // Typing the title is what drives every suggestion on this screen.
+  const setTitle = (val) => {
+    setForm((f) => {
+      const next = { ...f, title: val };
+      const guess = inferGoalFields(val);
+      if (guess) {
+        if (!touched.category) next.category = guess.category;
+        if (!touched.emoji) next.emoji = guess.emoji;
+        if (!touched.type) next.type = guess.type;
+      }
+      return next;
+    });
+    setAiMilestones(null);
+    setMoreState((s) => (s === 'unavailable' ? s : 'idle'));
+  };
+
+  const titleIdeas = suggestTitles(form.title, 'goal');
+  const milestoneIdeas = aiMilestones || suggestMilestones(form.title);
+  const habitIdeas = suggestHabits(form.title);
+
+  const toggle = (list, setList, item) =>
+    setList(
+      list.some((x) => x.title === item.title)
+        ? list.filter((x) => x.title !== item.title)
+        : [...list, item]
+    );
+
+  const handleMoreIdeas = async () => {
+    setMoreState('loading');
+    const res = await fetchAIIdeas({
+      kind: 'milestones',
+      title: form.title,
+      category: form.category,
+      description: form.description,
+    });
+    if (res.ok) {
+      setAiMilestones(res.items);
+      setMoreState('idle');
+    } else {
+      setMoreState(res.reason);
+    }
+  };
 
   const validate = () => {
     const e = {};
@@ -62,7 +126,19 @@ export default function CreateGoalScreen({ route, navigation }) {
       if (existing) {
         await dispatch(updateGoal({ id: existing._id, ...payload })).unwrap();
       } else {
-        await dispatch(createGoal(payload)).unwrap();
+        const goal = await dispatch(createGoal(payload)).unwrap();
+        for (const m of pickedMilestones) {
+          await milestonesAPI.create(goal._id, { title: m.title, description: m.description || '' });
+        }
+        for (const h of pickedHabits) {
+          await dispatch(createHabit({
+            title: h.title,
+            frequency: h.frequency,
+            emoji: h.emoji,
+            category: h.category,
+            goalId: goal._id,
+          }));
+        }
       }
       navigation.goBack();
     } catch (err) {
@@ -107,8 +183,8 @@ export default function CreateGoalScreen({ route, navigation }) {
             <TextInput
               style={styles.input}
               value={form.title}
-              onChangeText={set('title')}
-              placeholder="e.g. Learn Spanish"
+              onChangeText={setTitle}
+              placeholder="e.g. Run a marathon"
               placeholderTextColor={GP.inkMute}
               autoCapitalize="sentences"
               onFocus={() => setTitleFocused(true)}
@@ -116,6 +192,7 @@ export default function CreateGoalScreen({ route, navigation }) {
             />
           </View>
           {errors.title ? <Mono size={8} style={styles.fieldError}>{errors.title}</Mono> : null}
+          <TitleSuggest items={titleIdeas} onPick={setTitle} />
 
           <Mono size={8} dim style={styles.label}>◆ DESCRIPTION</Mono>
           <View style={[styles.inputBox, styles.textareaBox, descFocused && styles.inputFocused]}>
@@ -208,6 +285,30 @@ export default function CreateGoalScreen({ route, navigation }) {
               />
             ))}
           </GPRow>
+
+          {/* Suggestions only apply to a new goal — editing one shouldn't
+              silently create extra milestones and habits alongside the edit. */}
+          {!existing && (
+            <>
+              <SuggestionPanel
+                label={aiMilestones ? 'SUGGESTED MILESTONES (AI)' : 'SUGGESTED MILESTONES'}
+                items={milestoneIdeas}
+                addedTitles={pickedMilestones.map((m) => m.title)}
+                onAdd={(m) => toggle(pickedMilestones, setPickedMilestones, m)}
+                onAddAll={() => setPickedMilestones(milestoneIdeas)}
+                onMore={form.title.trim().length >= 3 ? handleMoreIdeas : undefined}
+                moreState={moreState}
+              />
+
+              <SuggestionPanel
+                label="SUPPORTING HABITS"
+                items={habitIdeas}
+                addedTitles={pickedHabits.map((h) => h.title)}
+                onAdd={(h) => toggle(pickedHabits, setPickedHabits, h)}
+                onAddAll={() => setPickedHabits(habitIdeas)}
+              />
+            </>
+          )}
 
           {submitError ? (
             <Mono size={9} style={{ color: GP.magenta, textAlign: 'center', marginBottom: 8 }}>

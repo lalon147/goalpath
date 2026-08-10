@@ -25,6 +25,14 @@ const habitSchema = new mongoose.Schema({
     maxlength: [200, 'Title too long']
   },
   description: { type: String, trim: true, maxlength: [1000], default: '' },
+  emoji: { type: String, default: '⚡', maxlength: 10 },
+  category: {
+    type: String,
+    enum: ['health', 'learning', 'mindfulness', 'productivity', 'fitness', 'social'],
+    default: null
+  },
+  targetValue: { type: Number, min: 1, default: 1 },
+  unit: { type: String, trim: true, maxlength: 30, default: '' },
   frequency: {
     type: String,
     enum: ['daily', 'weekly', 'monthly'],

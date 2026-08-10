@@ -23,6 +23,7 @@
   "author": "GoalPath Team",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

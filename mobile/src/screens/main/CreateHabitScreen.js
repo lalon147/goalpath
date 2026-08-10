@@ -6,8 +6,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { createHabit, updateHabit } from '../../redux/slices/habitsSlice';
+import { inferHabitFields, suggestTitles } from '../../services/suggestions';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, GPBox, GPRow } from '../../components/gp/primitives';
+import { TitleSuggest } from '../../components/gp/Suggest';
 
 const FREQUENCIES = ['daily', 'weekly', 'monthly'];
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -34,7 +36,24 @@ export default function CreateHabitScreen({ route, navigation }) {
   const [timeFocused, setTimeFocused] = useState(false);
   const [msgFocused, setMsgFocused] = useState(false);
 
-  const set = (field) => (val) => setForm((f) => ({ ...f, [field]: val }));
+  // Which fields the user has set themselves — a guess never overwrites those.
+  const [touched, setTouched] = useState({});
+
+  const set = (field) => (val) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setForm((f) => ({ ...f, [field]: val }));
+  };
+
+  const setTitle = (val) => {
+    setForm((f) => {
+      const next = { ...f, title: val };
+      const guess = inferHabitFields(val);
+      if (guess && !touched.frequency) next.frequency = guess.frequency;
+      return next;
+    });
+  };
+
+  const titleIdeas = suggestTitles(form.title, 'habit');
 
   const toggleDay = (day) => {
     const days = form.daysOfWeek.includes(day)
@@ -102,7 +121,7 @@ export default function CreateHabitScreen({ route, navigation }) {
             <TextInput
               style={styles.input}
               value={form.title}
-              onChangeText={set('title')}
+              onChangeText={setTitle}
               placeholder="e.g. Study Spanish 30min"
               placeholderTextColor={GP.inkMute}
               autoCapitalize="sentences"
@@ -111,6 +130,7 @@ export default function CreateHabitScreen({ route, navigation }) {
             />
           </View>
           {errors.title ? <Mono size={8} style={styles.fieldError}>{errors.title}</Mono> : null}
+          <TitleSuggest items={titleIdeas} onPick={setTitle} />
 
           <Mono size={8} dim style={styles.label}>◆ DESCRIPTION</Mono>
           <View style={[styles.inputBox, styles.textareaBox, descFocused && styles.inputFocused]}>
