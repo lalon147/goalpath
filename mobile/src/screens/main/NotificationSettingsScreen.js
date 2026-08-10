@@ -36,6 +36,7 @@ export default function NotificationSettingsScreen({ navigation }) {
 
   const initial = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(prefs?.dailyReminderTime || '09:00');
   const [enabled, setEnabled] = useState(prefs?.notificationsEnabled !== false);
+  const [emailEnabled, setEmailEnabled] = useState(prefs?.emailNotifications !== false);
   const [hour, setHour] = useState(initial ? Number(initial[1]) : 9);
   const [minute, setMinute] = useState(initial ? Number(initial[2]) : 0);
   const [saving, setSaving] = useState(false);
@@ -56,6 +57,7 @@ export default function NotificationSettingsScreen({ navigation }) {
         preferences: {
           notificationsEnabled: enabled,
           pushNotificationsEnabled: enabled,
+          emailNotifications: emailEnabled,
           dailyReminderTime: time,
         },
       }));
@@ -142,6 +144,23 @@ export default function NotificationSettingsScreen({ navigation }) {
             </GPRow>
           </GPBox>
         )}
+
+        <GPBox style={styles.card}>
+          <GPRow style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flex: 1, paddingRight: 12 }}>
+              <Sans size={14}>Email notifications</Sans>
+              <Mono size={8} dim style={{ marginTop: 4 }}>
+                SAVED TO YOUR ACCOUNT · NO EMAILS ARE SENT YET
+              </Mono>
+            </View>
+            <Switch
+              value={emailEnabled}
+              onValueChange={setEmailEnabled}
+              trackColor={{ false: GP.line, true: 'rgba(77,227,255,0.4)' }}
+              thumbColor={emailEnabled ? GP.cyan : GP.inkMute}
+            />
+          </GPRow>
+        </GPBox>
 
         {blocked && (
           <GPBox style={[styles.card, { borderColor: GP.amber }]}>

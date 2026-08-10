@@ -2,16 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../store/slices/authSlice';
+import { downloadExport } from '../../services/exportData';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, Chip } from '../../components/primitives';
 import Layout from '../../components/Layout';
-
-const MENU_ITEMS = [
-  { icon: '◆', label: 'Account Settings', desc: 'Email, password, preferences' },
-  { icon: '◉', label: 'Notifications', desc: 'Reminders and alerts' },
-  { icon: '▸', label: 'Data Export', desc: 'Download your progress data' },
-  { icon: '◈', label: 'Privacy', desc: 'Control your data' },
-];
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -20,11 +14,42 @@ export default function ProfilePage() {
   const { dashboard } = useSelector((s) => s.analytics);
 
   const [confirmSignout, setConfirmSignout] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportNote, setExportNote] = useState(null);
 
   const handleSignout = () => {
     dispatch(logout());
     navigate('/signin');
   };
+
+  const handleExport = async () => {
+    setExporting(true);
+    setExportNote(null);
+    try {
+      const counts = await downloadExport(user);
+      setExportNote({
+        ok: true,
+        text: `Downloaded ${counts.goals} goal${counts.goals === 1 ? '' : 's'} and ${counts.habits} habit${counts.habits === 1 ? '' : 's'}.`,
+      });
+    } catch {
+      setExportNote({ ok: false, text: 'Could not gather your data. Check your connection and try again.' });
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const menuItems = [
+    { icon: '◆', label: 'Edit Profile', desc: 'Name, bio, timezone', onClick: () => navigate('/profile/edit') },
+    { icon: '◉', label: 'Notifications', desc: 'Reminders and alerts', onClick: () => navigate('/profile/notifications') },
+    { icon: '◈', label: 'Change Password', desc: 'Update your sign-in password', onClick: () => navigate('/profile/password') },
+    {
+      icon: '▸',
+      label: 'Data Export',
+      desc: exporting ? 'Gathering your data…' : 'Download your goals and habits as JSON',
+      onClick: handleExport,
+      disabled: exporting,
+    },
+  ];
 
   const summary = dashboard?.summary;
   const initials = user
@@ -105,21 +130,29 @@ export default function ProfilePage() {
           overflow: 'hidden',
           marginBottom: 16,
         }}>
-          {MENU_ITEMS.map((item, i) => (
-            <div
+          {menuItems.map((item, i) => (
+            <button
               key={item.label}
+              type="button"
+              onClick={item.onClick}
+              disabled={item.disabled}
               style={{
+                width: '100%',
+                textAlign: 'left',
+                font: 'inherit',
                 padding: '14px 16px',
-                borderBottom: i < MENU_ITEMS.length - 1 ? `1px solid ${GP.line}` : 'none',
+                border: 'none',
+                borderBottom: i < menuItems.length - 1 ? `1px solid ${GP.line}` : 'none',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 14,
-                cursor: 'pointer',
+                cursor: item.disabled ? 'progress' : 'pointer',
+                opacity: item.disabled ? 0.6 : 1,
                 background: GP.bg2,
                 transition: 'background 0.1s',
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(77,227,255,0.04)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = GP.bg2}
+              onMouseEnter={(e) => { if (!item.disabled) e.currentTarget.style.background = 'rgba(77,227,255,0.04)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = GP.bg2; }}
             >
               <Mono size={12} style={{ color: GP.inkMute, minWidth: 16 }}>{item.icon}</Mono>
               <div style={{ flex: 1 }}>
@@ -127,9 +160,23 @@ export default function ProfilePage() {
                 <Mono size={10} dim style={{ display: 'block', marginTop: 2 }}>{item.desc}</Mono>
               </div>
               <Mono size={10} dim>▸</Mono>
-            </div>
+            </button>
           ))}
         </div>
+
+        {exportNote && (
+          <div style={{
+            border: `1px solid ${exportNote.ok ? GP.lime : GP.magenta}`,
+            borderRadius: 4,
+            padding: '10px 14px',
+            marginBottom: 16,
+            background: GP.bg2,
+          }}>
+            <Mono size={11} style={{ color: exportNote.ok ? GP.lime : GP.magenta }}>
+              ◉ {exportNote.text}
+            </Mono>
+          </div>
+        )}
 
         {/* Sign out */}
         <div style={{

@@ -179,7 +179,10 @@ export function GPInput({ label, value, onChange, placeholder, type = 'text', er
   );
 }
 
-export function GPButton({ children, onClick, variant = 'primary', disabled, loading, style }) {
+// `type` defaults to submit, matching the browser default this component
+// already relied on inside forms. Pass type="button" for secondary actions
+// (Cancel and friends) so they don't submit the form they sit in.
+export function GPButton({ children, onClick, variant = 'primary', disabled, loading, style, type = 'submit' }) {
   const variants = {
     primary: { background: 'rgba(77,227,255,0.12)', border: `1px solid ${GP.cyan}`, color: GP.cyan },
     danger:  { background: 'rgba(255,62,165,0.12)',  border: `1px solid ${GP.magenta}`, color: GP.magenta },
@@ -188,6 +191,7 @@ export function GPButton({ children, onClick, variant = 'primary', disabled, loa
   const v = variants[variant] || variants.primary;
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled || loading}
       style={{
