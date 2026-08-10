@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { signin, clearError } from '../../store/slices/authSlice';
 import { GP } from '../../theme/GP';
 import { GPInput, GPButton, Mono, Sans } from '../../components/primitives';
@@ -8,7 +8,12 @@ import { GPInput, GPButton, Mono, Sans } from '../../components/primitives';
 export default function SignInPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { loading, error } = useSelector((s) => s.auth);
+
+  // Set by flows that deliberately sign the user out — a password change, say —
+  // so landing back here reads as expected rather than as a lost session.
+  const notice = location.state?.notice;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,6 +57,19 @@ export default function SignInPage() {
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>Sign In</Sans>
           <Sans size={14} style={{ color: GP.inkDim, display: 'block' }}>Resume your mission.</Sans>
         </div>
+
+        {/* Notice */}
+        {notice && !error && (
+          <div style={{
+            background: 'rgba(200,255,62,0.08)',
+            border: `1px solid ${GP.lime}`,
+            borderRadius: 4,
+            padding: '10px 14px',
+            marginBottom: 20,
+          }}>
+            <Mono size={11} style={{ color: GP.lime }}>◉ {notice}</Mono>
+          </div>
+        )}
 
         {/* Error */}
         {error && (

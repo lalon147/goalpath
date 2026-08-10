@@ -1,16 +1,24 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Alert, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
+import { buildExport } from '../../services/exportData';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, GPBox, GPRow, GPCol } from '../../components/gp/primitives';
 
-function MenuItem({ label, onPress, danger }) {
+function MenuItem({ label, hint, onPress, danger, disabled }) {
   return (
-    <TouchableOpacity style={styles.menuItem} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={[styles.menuItem, disabled && { opacity: 0.5 }]}
+      onPress={onPress}
+      disabled={disabled}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <Sans size={14} style={{ color: danger ? GP.magenta : GP.ink }}>{label}</Sans>
-      <Mono size={12} style={{ color: danger ? GP.magenta : GP.inkDim }}>›</Mono>
+      <Mono size={12} style={{ color: danger ? GP.magenta : GP.inkDim }}>{hint || '›'}</Mono>
     </TouchableOpacity>
   );
 }
@@ -19,12 +27,33 @@ export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const { user } = useSelector((s) => s.auth);
   const { dashboard } = useSelector((s) => s.analytics);
+  const [exporting, setExporting] = useState(false);
 
   const handleLogout = () => {
     Alert.alert('Log Out', 'Are you sure you want to log out?', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Log Out', style: 'destructive', onPress: () => dispatch(logout()) },
     ]);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const payload = await buildExport(user);
+      // No expo-file-system in this project, so the export rides out through the
+      // system share sheet — the user picks Files, Mail, Notes, wherever.
+      await Share.share({
+        title: 'GoalPath data export',
+        message: JSON.stringify(payload, null, 2),
+      });
+    } catch (err) {
+      Alert.alert(
+        'Export failed',
+        'Could not gather your data. Check your connection and try again.'
+      );
+    } finally {
+      setExporting(false);
+    }
   };
 
   const initials = `${user?.firstName?.[0] || ''}${user?.lastName?.[0] || ''}`.toUpperCase();
@@ -80,15 +109,19 @@ export default function ProfileScreen({ navigation }) {
 
         <GPBox style={styles.menuCard}>
           <Mono size={7} dim style={styles.menuSection}>SETTINGS</Mono>
-          <MenuItem label="Edit Profile" onPress={() => {}} />
+          <MenuItem label="Edit Profile" onPress={() => navigation.navigate('EditProfile')} />
           <MenuItem label="Notifications" onPress={() => navigation.navigate('NotificationSettings')} />
-          <MenuItem label="Privacy & Security" onPress={() => {}} />
         </GPBox>
 
         <GPBox style={styles.menuCard}>
           <Mono size={7} dim style={styles.menuSection}>ACCOUNT</Mono>
-          <MenuItem label="Change Password" onPress={() => {}} />
-          <MenuItem label="Email Preferences" onPress={() => {}} />
+          <MenuItem label="Change Password" onPress={() => navigation.navigate('ChangePassword')} />
+          <MenuItem
+            label="Export My Data"
+            hint={exporting ? '…' : '›'}
+            onPress={handleExport}
+            disabled={exporting}
+          />
           <MenuItem label="Log Out" onPress={handleLogout} danger />
         </GPBox>
 

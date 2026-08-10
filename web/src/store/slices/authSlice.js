@@ -55,6 +55,27 @@ export const loadUser = createAsyncThunk('auth/loadUser', async (_, { rejectWith
   }
 });
 
+export const updateProfile = createAsyncThunk('auth/updateProfile', async (profileData, { rejectWithValue }) => {
+  try {
+    const { data } = await userAPI.updateProfile(profileData);
+    return data.data;
+  } catch (err) {
+    return rejectWithValue(errorMessage(err, 'Update failed'));
+  }
+});
+
+// The backend clears every refresh token on a successful change, so the caller
+// is expected to send the user back to sign-in rather than keep a session that
+// will die the moment the access token expires.
+export const changePassword = createAsyncThunk('auth/changePassword', async (payload, { rejectWithValue }) => {
+  try {
+    const { data } = await userAPI.changePassword(payload);
+    return data;
+  } catch (err) {
+    return rejectWithValue(errorMessage(err, 'Could not change password'));
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: { user: null, isAuthenticated: false, loading: false, error: null, initializing: true },
@@ -95,6 +116,9 @@ const authSlice = createSlice({
       .addCase(loadUser.rejected, (state) => {
         state.isAuthenticated = false;
         state.initializing = false;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
       });
   },
 });

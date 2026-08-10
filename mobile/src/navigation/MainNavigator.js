@@ -13,6 +13,8 @@ import HabitDetailScreen  from '../screens/main/HabitDetailScreen';
 import CreateHabitScreen  from '../screens/main/CreateHabitScreen';
 import AnalyticsScreen    from '../screens/main/AnalyticsScreen';
 import ProfileScreen      from '../screens/main/ProfileScreen';
+import EditProfileScreen  from '../screens/main/EditProfileScreen';
+import ChangePasswordScreen from '../screens/main/ChangePasswordScreen';
 import NotificationSettingsScreen from '../screens/main/NotificationSettingsScreen';
 
 const Tab   = createBottomTabNavigator();
@@ -63,6 +65,8 @@ function ProfileStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
       <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
     </Stack.Navigator>
   );

@@ -16,6 +16,9 @@ import HabitsPage from './pages/main/HabitsPage';
 import CreateHabitPage from './pages/main/CreateHabitPage';
 import AnalyticsPage from './pages/main/AnalyticsPage';
 import ProfilePage from './pages/main/ProfilePage';
+import EditProfilePage from './pages/main/EditProfilePage';
+import ChangePasswordPage from './pages/main/ChangePasswordPage';
+import NotificationSettingsPage from './pages/main/NotificationSettingsPage';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -44,6 +47,9 @@ export default function App() {
       <Route path="/habits/new" element={<PrivateRoute><CreateHabitPage /></PrivateRoute>} />
       <Route path="/analytics" element={<PrivateRoute><AnalyticsPage /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+      <Route path="/profile/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
+      <Route path="/profile/password" element={<PrivateRoute><ChangePasswordPage /></PrivateRoute>} />
+      <Route path="/profile/notifications" element={<PrivateRoute><NotificationSettingsPage /></PrivateRoute>} />
 
       {/* Default */}
       <Route path="/" element={<HomePage />} />
