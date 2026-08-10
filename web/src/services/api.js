@@ -79,6 +79,10 @@ export const habitsAPI = {
   getLogs: (id, params) => api.get(`/habits/${id}/logs`, { params }),
 };
 
+export const suggestionsAPI = {
+  generate: (data) => api.post('/suggestions', data),
+};
+
 export const analyticsAPI = {
   dashboard: () => api.get('/analytics/dashboard'),
   goalProgress: (id) => api.get(`/analytics/goals/${id}`),

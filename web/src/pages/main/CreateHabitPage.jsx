@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { createHabit } from '../../store/slices/habitsSlice';
+import { inferHabitFields, suggestTitles } from '../../services/suggestions';
+import { TitleSuggest } from '../../components/Suggest';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, GPInput, GPButton } from '../../components/primitives';
 import Layout from '../../components/Layout';
@@ -17,7 +19,7 @@ export default function CreateHabitPage() {
   const { loading, error } = useSelector((s) => s.habits);
 
   const [form, setForm] = useState({
-    name: '',
+    title: '',
     description: '',
     emoji: '⚡',
     frequency: 'daily',
@@ -29,7 +31,28 @@ export default function CreateHabitPage() {
   });
   const [errors, setErrors] = useState({});
 
-  const set = (field) => (val) => setForm((f) => ({ ...f, [field]: val }));
+  // Which fields the user has set themselves — a guess never overwrites those.
+  const [touched, setTouched] = useState({});
+
+  const set = (field) => (val) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setForm((f) => ({ ...f, [field]: val }));
+  };
+
+  const setTitle = (val) => {
+    setForm((f) => {
+      const next = { ...f, title: val };
+      const guess = inferHabitFields(val);
+      if (guess) {
+        if (!touched.emoji) next.emoji = guess.emoji;
+        if (!touched.category) next.category = guess.category;
+        if (!touched.frequency) next.frequency = guess.frequency;
+      }
+      return next;
+    });
+  };
+
+  const titleIdeas = suggestTitles(form.title, 'habit');
 
   const toggleDay = (dayIdx) => {
     setForm((f) => ({
@@ -42,7 +65,7 @@ export default function CreateHabitPage() {
 
   const validate = () => {
     const e = {};
-    if (!form.name.trim()) e.name = 'Required';
+    if (!form.title.trim()) e.title = 'Required';
     setErrors(e);
     return !Object.keys(e).length;
   };
@@ -50,7 +73,26 @@ export default function CreateHabitPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    const result = await dispatch(createHabit(form));
+
+    // The API rejects unknown keys outright, so the payload is assembled
+    // explicitly instead of spreading the form: reminderTime is a form-only
+    // field that the API expects as a reminders array, and empty optionals
+    // have to be omitted rather than sent blank.
+    const payload = {
+      title: form.title.trim(),
+      description: form.description,
+      emoji: form.emoji,
+      frequency: form.frequency,
+      targetValue: form.targetValue,
+      unit: form.unit,
+      ...(form.category && { category: form.category }),
+      ...(form.frequency === 'weekly' && { daysOfWeek: form.daysOfWeek }),
+      ...(form.reminderTime && {
+        reminders: [{ time: form.reminderTime, enabled: true }],
+      }),
+    };
+
+    const result = await dispatch(createHabit(payload));
     if (!result.error) navigate('/habits');
   };
 
@@ -99,8 +141,9 @@ export default function CreateHabitPage() {
             </div>
           </div>
 
-          <GPInput label="Habit Name" value={form.name} onChange={set('name')}
-            placeholder="e.g. Morning run" error={errors.name} />
+          <GPInput label="Habit Name" value={form.title} onChange={setTitle}
+            placeholder="e.g. Morning run" error={errors.title} />
+          <TitleSuggest items={titleIdeas} onPick={setTitle} />
           <GPInput label="Description (optional)" value={form.description} onChange={set('description')}
             placeholder="Why this habit matters" />
 

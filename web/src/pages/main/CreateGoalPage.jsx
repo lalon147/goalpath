@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { createGoal } from '../../store/slices/goalsSlice';
+import { createHabit } from '../../store/slices/habitsSlice';
+import {
+  inferGoalFields,
+  suggestTitles,
+  suggestMilestones,
+  suggestHabits,
+  fetchAIIdeas,
+} from '../../services/suggestions';
+import { TitleSuggest, SuggestionPanel } from '../../components/Suggest';
 import { milestonesAPI } from '../../services/api';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, GPInput, GPButton } from '../../components/primitives';
@@ -35,7 +44,84 @@ export default function CreateGoalPage() {
   const [errors, setErrors] = useState({});
   const [milestones, setMilestones] = useState([{ title: '', description: '' }]);
 
-  const set = (field) => (val) => setForm((f) => ({ ...f, [field]: val }));
+  // Which fields the user has touched. The engine only auto-fills what they
+  // haven't set themselves, so a guess never overwrites a deliberate choice.
+  const [touched, setTouched] = useState({});
+  const [moreState, setMoreState] = useState('idle');
+  const [aiMilestones, setAiMilestones] = useState(null);
+  const [pickedHabits, setPickedHabits] = useState([]);
+
+  const set = (field) => (val) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setForm((f) => ({ ...f, [field]: val }));
+  };
+
+  // Typing the title is what drives every suggestion on this page.
+  const setTitle = (val) => {
+    setForm((f) => {
+      const next = { ...f, title: val };
+      const guess = inferGoalFields(val);
+      if (guess) {
+        if (!touched.category) next.category = guess.category;
+        if (!touched.emoji) next.emoji = guess.emoji;
+        if (!touched.type) next.type = guess.type;
+      }
+      return next;
+    });
+    setAiMilestones(null);
+    setMoreState((s) => (s === 'unavailable' ? s : 'idle'));
+  };
+
+  const titleIdeas = suggestTitles(form.title, 'goal');
+  const milestoneIdeas = aiMilestones || suggestMilestones(form.title);
+  const habitIdeas = suggestHabits(form.title);
+
+  // Milestones start with one blank row; adding a suggestion should fill that
+  // row rather than leaving an empty one above it.
+  const addMilestone_ = (m) => {
+    setMilestones((ms) => {
+      const next = ms.filter((x) => x.title.trim());
+      if (next.some((x) => x.title === m.title)) return ms;
+      return [...next, { title: m.title, description: m.description || '' }];
+    });
+  };
+
+  const addAllMilestones = () => {
+    setMilestones((ms) => {
+      const kept = ms.filter((x) => x.title.trim());
+      const have = new Set(kept.map((x) => x.title));
+      return [
+        ...kept,
+        ...milestoneIdeas
+          .filter((m) => !have.has(m.title))
+          .map((m) => ({ title: m.title, description: m.description || '' })),
+      ];
+    });
+  };
+
+  const handleMoreIdeas = async () => {
+    setMoreState('loading');
+    const res = await fetchAIIdeas({
+      kind: 'milestones',
+      title: form.title,
+      category: form.category,
+      description: form.description,
+    });
+    if (res.ok) {
+      setAiMilestones(res.items);
+      setMoreState('idle');
+    } else {
+      setMoreState(res.reason);
+    }
+  };
+
+  const toggleHabit = (h) => {
+    setPickedHabits((hs) =>
+      hs.some((x) => x.title === h.title)
+        ? hs.filter((x) => x.title !== h.title)
+        : [...hs, h]
+    );
+  };
 
   const validate = () => {
     const e = {};
@@ -60,6 +146,17 @@ export default function CreateGoalPage() {
       const validMilestones = milestones.filter((m) => m.title.trim());
       for (const m of validMilestones) {
         await milestonesAPI.create(goalId, { title: m.title, description: m.description });
+      }
+      // Supporting habits are opt-in extras — a failure here shouldn't lose the
+      // goal the user just created, so each one is attempted independently.
+      for (const h of pickedHabits) {
+        await dispatch(createHabit({
+          title: h.title,
+          frequency: h.frequency,
+          emoji: h.emoji,
+          category: h.category,
+          goalId,
+        }));
       }
       navigate('/goals');
     }
@@ -111,8 +208,9 @@ export default function CreateGoalPage() {
             </div>
           </div>
 
-          <GPInput label="Goal Title" value={form.title} onChange={set('title')}
+          <GPInput label="Goal Title" value={form.title} onChange={setTitle}
             placeholder="e.g. Run a marathon" error={errors.title} />
+          <TitleSuggest items={titleIdeas} onPick={setTitle} />
           <GPInput label="Description (optional)" value={form.description} onChange={set('description')}
             placeholder="What does success look like?" />
 
@@ -224,6 +322,62 @@ export default function CreateGoalPage() {
               }}
             />
           </div>
+
+          {/* Suggested milestones — engine first, model on demand */}
+          <SuggestionPanel
+            label={aiMilestones ? 'SUGGESTED MILESTONES (AI)' : 'SUGGESTED MILESTONES'}
+            items={milestoneIdeas}
+            onAdd={addMilestone_}
+            onAddAll={addAllMilestones}
+            onMore={form.title.trim().length >= 3 ? handleMoreIdeas : undefined}
+            moreState={moreState}
+            renderMeta={(m) => m.description
+              ? <Mono size={10} dim style={{ display: 'block', marginTop: 2 }}>{m.description}</Mono>
+              : null}
+          />
+
+          {/* Suggested supporting habits — created alongside the goal */}
+          {habitIdeas.length > 0 && (
+            <div style={{
+              border: `1px solid ${GP.line}`,
+              borderRadius: 4,
+              background: GP.bg2,
+              padding: '12px 14px',
+              marginBottom: 16,
+            }}>
+              <Mono size={10} accent style={{ display: 'block', letterSpacing: 1.5, marginBottom: 4 }}>
+                ✦ SUPPORTING HABITS
+              </Mono>
+              <Mono size={10} dim style={{ display: 'block', marginBottom: 10 }}>
+                CREATED AND LINKED TO THIS GOAL
+              </Mono>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {habitIdeas.map((h) => {
+                  const on = pickedHabits.some((x) => x.title === h.title);
+                  return (
+                    <button
+                      key={h.title}
+                      type="button"
+                      onClick={() => toggleHabit(h)}
+                      style={{
+                        background: on ? 'rgba(77,227,255,0.15)' : 'transparent',
+                        border: `1px solid ${on ? GP.cyan : GP.line}`,
+                        borderRadius: 3,
+                        padding: '5px 10px',
+                        fontFamily: GP.sans,
+                        fontSize: 12,
+                        color: on ? GP.cyan : GP.inkDim,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {on ? '✓ ' : '+ '}{h.emoji} {h.title}
+                      <span style={{ fontFamily: GP.mono, fontSize: 10, opacity: 0.7 }}> · {h.frequency}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Milestones */}
           <div style={{ marginBottom: 20 }}>

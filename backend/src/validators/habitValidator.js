@@ -1,10 +1,16 @@
 const Joi = require('joi');
 const { validate } = require('./authValidator');
 
+const habitCategories = ['health', 'learning', 'mindfulness', 'productivity', 'fitness', 'social'];
+
 exports.createHabitSchema = Joi.object({
   goalId: Joi.string().hex().length(24),
   title: Joi.string().trim().min(1).max(200).required(),
   description: Joi.string().max(1000).allow(''),
+  emoji: Joi.string().max(10),
+  category: Joi.string().valid(...habitCategories).allow('', null),
+  targetValue: Joi.number().integer().min(1),
+  unit: Joi.string().max(30).allow(''),
   frequency: Joi.string().valid('daily', 'weekly', 'monthly').required(),
   daysOfWeek: Joi.array().items(Joi.number().integer().min(0).max(6)),
   startDate: Joi.date().iso(),
@@ -18,6 +24,10 @@ exports.createHabitSchema = Joi.object({
 exports.updateHabitSchema = Joi.object({
   title: Joi.string().trim().min(1).max(200),
   description: Joi.string().max(1000).allow(''),
+  emoji: Joi.string().max(10),
+  category: Joi.string().valid(...habitCategories).allow('', null),
+  targetValue: Joi.number().integer().min(1),
+  unit: Joi.string().max(30).allow(''),
   frequency: Joi.string().valid('daily', 'weekly', 'monthly'),
   daysOfWeek: Joi.array().items(Joi.number().integer().min(0).max(6)),
   status: Joi.string().valid('active', 'paused', 'completed'),
