@@ -36,8 +36,8 @@ export default function GoalDetailScreen({ route, navigation }) {
     ]);
   };
 
-  const handleCompleteMilestone = (milestoneId) => {
-    dispatch(completeMilestone({ goalId, milestoneId }));
+  const handleToggleMilestone = (milestoneId, done) => {
+    dispatch(completeMilestone({ goalId, milestoneId, done: !done }));
   };
 
   if (loading || !goal) {
@@ -155,6 +155,47 @@ export default function GoalDetailScreen({ route, navigation }) {
           </GPBox>
         ) : null}
 
+        {/* ── 1% better every day ── */}
+        <TouchableOpacity
+          style={styles.practiceBtn}
+          onPress={() => navigation.navigate('DailyPractice', {
+            goalId,
+            title: goal.title,
+            category: goal.category,
+            description: goal.description,
+          })}
+        >
+          <GPRow style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <Mono size={9} style={{ color: GP.lime }}>◆ 1% BETTER EVERY DAY</Mono>
+              <Sans size={11} color={GP.inkDim} style={{ marginTop: 4 }}>
+                Turn this goal into something you can log daily
+              </Sans>
+            </View>
+            <Mono size={10} style={{ color: GP.lime }}>▸</Mono>
+          </GPRow>
+        </TouchableOpacity>
+
+        {/* ── Shared goal ── */}
+        <TouchableOpacity
+          style={styles.sharedBtn}
+          onPress={() => navigation.navigate('GoalMembers', { goalId })}
+        >
+          <GPRow style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <Mono size={9} accent>
+                ◆ {goal.isShared ? 'SHARED GOAL' : 'DO THIS WITH FRIENDS'}
+              </Mono>
+              <Sans size={11} color={GP.inkDim} style={{ marginTop: 4 }}>
+                {goal.isShared
+                  ? `${goal.progressMode === 'shared' ? 'Shared' : 'Separate'} progress · see the leaderboard`
+                  : 'Invite a friend and track it together'}
+              </Sans>
+            </View>
+            <Mono size={10} accent>▸</Mono>
+          </GPRow>
+        </TouchableOpacity>
+
         {/* ── Milestones ── */}
         {goal.milestones?.length > 0 && (
           <View>
@@ -166,12 +207,15 @@ export default function GoalDetailScreen({ route, navigation }) {
             </GPRow>
             <GPCol gap={4}>
               {goal.milestones.map((m) => {
-                const done = m.status === 'completed';
-                const active = m.status === 'in_progress';
+                // On a shared goal `status` is the owner's (or the group's in
+                // shared mode); `completedByMe` is what this user has actually
+                // ticked, so it wins whenever the server sent it.
+                const done = m.completedByMe ?? (m.status === 'completed');
+                const active = !done && m.status === 'in_progress';
                 return (
                   <TouchableOpacity
                     key={m._id}
-                    onPress={() => !done && handleCompleteMilestone(m._id)}
+                    onPress={() => handleToggleMilestone(m._id, done)}
                   >
                     <GPRow gap={8} style={[
                       styles.milestoneRow,
@@ -285,6 +329,22 @@ const styles = StyleSheet.create({
   },
   chartBox: {
     padding: 10,
+  },
+  practiceBtn: {
+    backgroundColor: GP.bg2,
+    borderWidth: 1,
+    borderColor: GP.lime,
+    borderRadius: 4,
+    padding: 14,
+    marginBottom: 10,
+  },
+  sharedBtn: {
+    backgroundColor: GP.bg2,
+    borderWidth: 1,
+    borderColor: GP.cyan,
+    borderRadius: 4,
+    padding: 14,
+    marginBottom: 14,
   },
   milestoneRow: {
     padding: 8,

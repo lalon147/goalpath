@@ -78,9 +78,16 @@ export const changePassword = createAsyncThunk('auth/changePassword', async (pay
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { user: null, isAuthenticated: false, loading: false, error: null, initializing: true },
+  initialState: {
+    user: null, isAuthenticated: false, loading: false, error: null, initializing: true,
+    // Signing up authenticates immediately, which would otherwise redirect
+    // straight past the one-time recovery code. Parking it here lets the router
+    // hold on it until the user confirms they have saved it.
+    recoveryCode: null,
+  },
   reducers: {
     clearError: (state) => { state.error = null; },
+    acknowledgeRecoveryCode: (state) => { state.recoveryCode = null; },
   },
   extraReducers: (builder) => {
     const pending = (state) => { state.loading = true; state.error = null; };
@@ -101,6 +108,7 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.isAuthenticated = true;
         state.initializing = false;
+        state.recoveryCode = action.payload.recoveryCode || null;
       })
       .addCase(signup.rejected, rejected)
       .addCase(logout.fulfilled, (state) => {
@@ -123,5 +131,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, acknowledgeRecoveryCode } = authSlice.actions;
 export default authSlice.reducer;

@@ -332,4 +332,29 @@ export async function fetchAIIdeas({ kind, title, category, description }) {
   }
 }
 
+/**
+ * Fetches a "1% better every day" plan: one daily-trackable practice plus
+ * weekly targets that climb.
+ *
+ * Same contract as fetchAIIdeas — never throws, and `reason` separates "no API
+ * key on this server" from a transient failure.
+ */
+export async function fetchDailyPractice({ title, category, description, weeks = 8 }) {
+  try {
+    const { data } = await suggestionsAPI.generate({
+      kind: 'daily-practice',
+      title,
+      category: category || undefined,
+      description: description || undefined,
+      weeks,
+    });
+    return { ok: true, practice: data.data.practice, weeklyMilestones: data.data.weeklyMilestones || [] };
+  } catch (err) {
+    const code = err.response?.data?.error?.code;
+    if (code === 'SUGGESTIONS_UNAVAILABLE') return { ok: false, reason: 'unavailable' };
+    if (code === 'RATE_LIMITED') return { ok: false, reason: 'rate-limited' };
+    return { ok: false, reason: 'failed' };
+  }
+}
+
 export { GOAL_CATEGORIES, HABIT_CATEGORIES };

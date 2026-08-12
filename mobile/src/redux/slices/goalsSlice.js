@@ -55,13 +55,18 @@ export const createMilestone = createAsyncThunk('goals/createMilestone', async (
   }
 });
 
-export const completeMilestone = createAsyncThunk('goals/completeMilestone', async ({ goalId, milestoneId }, { rejectWithValue }) => {
+// `done` makes this a toggle. Untickable milestones were a problem the moment
+// members got their own progress: a mis-tap on someone else's shared goal had
+// no way back, and the owner could not correct one either.
+export const completeMilestone = createAsyncThunk('goals/completeMilestone', async ({ goalId, milestoneId, done = true }, { rejectWithValue }) => {
   try {
-    await milestonesAPI.complete(goalId, milestoneId);
+    await (done
+      ? milestonesAPI.complete(goalId, milestoneId)
+      : milestonesAPI.uncomplete(goalId, milestoneId));
     const { data } = await goalsAPI.getOne(goalId);
     return data.data;
   } catch (err) {
-    return rejectWithValue(err.response?.data?.error?.message || 'Failed to complete milestone');
+    return rejectWithValue(err.response?.data?.error?.message || 'Failed to update milestone');
   }
 });
 

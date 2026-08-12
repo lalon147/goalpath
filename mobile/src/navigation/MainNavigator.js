@@ -16,6 +16,10 @@ import ProfileScreen      from '../screens/main/ProfileScreen';
 import EditProfileScreen  from '../screens/main/EditProfileScreen';
 import ChangePasswordScreen from '../screens/main/ChangePasswordScreen';
 import NotificationSettingsScreen from '../screens/main/NotificationSettingsScreen';
+import FriendsScreen       from '../screens/main/FriendsScreen';
+import GoalMembersScreen   from '../screens/main/GoalMembersScreen';
+import WeekLogScreen       from '../screens/main/WeekLogScreen';
+import DailyPracticeScreen from '../screens/main/DailyPracticeScreen';
 
 const Tab   = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -47,13 +51,18 @@ function GoalsStack() {
       <Stack.Screen name="GoalsList"   component={GoalsScreen} />
       <Stack.Screen name="GoalDetail"  component={GoalDetailScreen} />
       <Stack.Screen name="CreateGoal"  component={CreateGoalScreen} />
+      <Stack.Screen name="GoalMembers" component={GoalMembersScreen} />
+      <Stack.Screen name="DailyPractice" component={DailyPracticeScreen} />
     </Stack.Navigator>
   );
 }
 
 function HabitsStack() {
   return (
+    // The week grid leads: the LOG tab exists to log, and the habit list is
+    // where you go to manage them rather than the first thing you land on.
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="WeekLog"     component={WeekLogScreen} />
       <Stack.Screen name="HabitsList"  component={HabitsScreen} />
       <Stack.Screen name="HabitDetail" component={HabitDetailScreen} />
       <Stack.Screen name="CreateHabit" component={CreateHabitScreen} />
@@ -65,6 +74,7 @@ function ProfileStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ProfileHome" component={ProfileScreen} />
+      <Stack.Screen name="Friends" component={FriendsScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
       <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />

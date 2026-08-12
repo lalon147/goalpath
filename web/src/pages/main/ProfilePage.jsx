@@ -39,6 +39,7 @@ export default function ProfilePage() {
   };
 
   const menuItems = [
+    { icon: '◈', label: 'Friends', desc: 'Find people by username', onClick: () => navigate('/friends') },
     { icon: '◆', label: 'Edit Profile', desc: 'Name, bio, timezone', onClick: () => navigate('/profile/edit') },
     { icon: '◉', label: 'Notifications', desc: 'Reminders and alerts', onClick: () => navigate('/profile/notifications') },
     { icon: '◈', label: 'Change Password', desc: 'Update your sign-in password', onClick: () => navigate('/profile/password') },
@@ -53,7 +54,8 @@ export default function ProfilePage() {
 
   const summary = dashboard?.summary;
   const initials = user
-    ? `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase() || '?'
+    ? (`${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase()
+       || user.username?.[0]?.toUpperCase() || '?')
     : '?';
 
   const memberSince = user?.createdAt
@@ -94,9 +96,11 @@ export default function ProfilePage() {
           </div>
           <div>
             <Sans size={18} weight={700} style={{ display: 'block', marginBottom: 4 }}>
-              {user ? `${user.firstName} ${user.lastName}` : '—'}
+              {/* Accounts made without personal details have no name, so the
+                  username stands in as the identity. */}
+              {user ? ([user.firstName, user.lastName].filter(Boolean).join(' ') || `@${user.username}`) : '—'}
             </Sans>
-            <Mono size={11} dim style={{ display: 'block', marginBottom: 6 }}>{user?.email || '—'}</Mono>
+            <Mono size={11} dim style={{ display: 'block', marginBottom: 6 }}>@{user?.username || '—'}</Mono>
             <Chip color={GP.cyan}>MEMBER SINCE {memberSince.toUpperCase()}</Chip>
           </div>
         </div>

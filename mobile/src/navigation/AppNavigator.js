@@ -6,11 +6,12 @@ import { loadUser } from '../redux/slices/authSlice';
 import { syncRemindersFromPreferences } from '../services/notifications';
 import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
+import RecoveryCodeScreen from '../screens/auth/RecoveryCodeScreen';
 import { Colors } from '../constants/colors';
 
 export default function AppNavigator() {
   const dispatch = useDispatch();
-  const { isAuthenticated, initializing, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, initializing, user, recoveryCode } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(loadUser());
@@ -32,6 +33,14 @@ export default function AppNavigator() {
         <ActivityIndicator size="large" color="#4de3ff" />
       </View>
     );
+  }
+
+  // A freshly signed-up account is already authenticated, so without this the
+  // main app would replace the signup screen instantly and the one-time
+  // recovery code would never be seen. It stands in front of everything until
+  // the user confirms they have saved it.
+  if (isAuthenticated && recoveryCode) {
+    return <RecoveryCodeScreen />;
   }
 
   return (

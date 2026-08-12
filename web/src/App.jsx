@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from './store/slices/authSlice';
 import PrivateRoute from './components/PrivateRoute';
 import HomePage from './pages/HomePage';
@@ -8,6 +8,10 @@ import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import RecoveryCodePage from './pages/auth/RecoveryCodePage';
+import FriendsPage from './pages/main/FriendsPage';
+import WeekLogPage from './pages/main/WeekLogPage';
+import GoalMembersPage from './pages/main/GoalMembersPage';
 import DashboardPage from './pages/main/DashboardPage';
 import GoalsPage from './pages/main/GoalsPage';
 import GoalDetailPage from './pages/main/GoalDetailPage';
@@ -22,12 +26,19 @@ import NotificationSettingsPage from './pages/main/NotificationSettingsPage';
 
 export default function App() {
   const dispatch = useDispatch();
+  const recoveryCode = useSelector((s) => s.auth.recoveryCode);
+
   // Always dispatch: loadUser rejects early (without a network call) when there
   // is no stored token, and that rejection is what clears `initializing`.
   // Skipping the dispatch leaves logged-out visitors stuck on the loading screen.
   useEffect(() => {
     dispatch(loadUser());
   }, [dispatch]);
+
+  // Signing up authenticates immediately, so without this the dashboard would
+  // replace the signup page and the one-time recovery code would never be seen.
+  // It stands in front of every route until the user confirms they saved it.
+  if (recoveryCode) return <RecoveryCodePage />;
 
   return (
     <Routes>
@@ -43,9 +54,12 @@ export default function App() {
       <Route path="/goals/new" element={<PrivateRoute><CreateGoalPage /></PrivateRoute>} />
       <Route path="/goals/:id" element={<PrivateRoute><GoalDetailPage /></PrivateRoute>} />
       <Route path="/goals/:id/edit" element={<PrivateRoute><CreateGoalPage /></PrivateRoute>} />
-      <Route path="/habits" element={<PrivateRoute><HabitsPage /></PrivateRoute>} />
+      <Route path="/habits" element={<PrivateRoute><WeekLogPage /></PrivateRoute>} />
+      <Route path="/habits/manage" element={<PrivateRoute><HabitsPage /></PrivateRoute>} />
       <Route path="/habits/new" element={<PrivateRoute><CreateHabitPage /></PrivateRoute>} />
       <Route path="/analytics" element={<PrivateRoute><AnalyticsPage /></PrivateRoute>} />
+      <Route path="/goals/:id/members" element={<PrivateRoute><GoalMembersPage /></PrivateRoute>} />
+      <Route path="/friends" element={<PrivateRoute><FriendsPage /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       <Route path="/profile/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
       <Route path="/profile/password" element={<PrivateRoute><ChangePasswordPage /></PrivateRoute>} />

@@ -74,9 +74,11 @@ export default function ProfileScreen({ navigation }) {
             </View>
           </GPRow>
           <Sans size={18} weight="700" style={{ textAlign: 'center', marginBottom: 2 }}>
-            {user?.firstName} {user?.lastName}
+            {/* Accounts created without any personal details have no name at
+                all, so the username stands in as the identity. */}
+            {[user?.firstName, user?.lastName].filter(Boolean).join(' ') || `@${user?.username}`}
           </Sans>
-          <Mono size={9} dim style={{ textAlign: 'center' }}>{user?.email}</Mono>
+          <Mono size={9} dim style={{ textAlign: 'center' }}>@{user?.username}</Mono>
         </GPBox>
 
         {dashboard?.summary && (
@@ -106,6 +108,11 @@ export default function ProfileScreen({ navigation }) {
             </GPRow>
           </GPBox>
         )}
+
+        <GPBox style={styles.menuCard}>
+          <Mono size={7} dim style={styles.menuSection}>SOCIAL</Mono>
+          <MenuItem label="Friends" onPress={() => navigation.navigate('Friends')} />
+        </GPBox>
 
         <GPBox style={styles.menuCard}>
           <Mono size={7} dim style={styles.menuSection}>SETTINGS</Mono>

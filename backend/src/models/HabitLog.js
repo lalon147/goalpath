@@ -27,6 +27,10 @@ const habitLogSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// One log per habit per day, enforced by the database rather than only by the
+// controller's check-then-write — which two near-simultaneous requests can both
+// pass. The by-date endpoint upserts against exactly this key.
+habitLogSchema.index({ habitId: 1, logDate: 1 }, { unique: true });
 habitLogSchema.index({ habitId: 1, logDate: -1 });
 habitLogSchema.index({ userId: 1, logDate: -1 });
 habitLogSchema.index({ logDate: 1 });

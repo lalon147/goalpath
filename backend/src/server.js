@@ -121,6 +121,7 @@ app.use('/api/goals', require('./routes/goalRoutes'));
 app.use('/api/habits', require('./routes/habitRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/suggestions', require('./routes/suggestionRoutes'));
+app.use('/api/friends', require('./routes/friendRoutes'));
 
 // ============================================
 // 404 Handler

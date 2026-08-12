@@ -149,10 +149,12 @@ export default function EditProfileScreen({ navigation }) {
             )}
           </GPBox>
 
-          <Mono size={8} dim style={styles.label}>◆ EMAIL</Mono>
+          <Mono size={8} dim style={styles.label}>◆ USERNAME</Mono>
           <GPBox style={styles.tzBox}>
-            <Sans size={14} style={{ color: GP.inkMute }}>{user?.email}</Sans>
-            <Mono size={8} dim style={{ marginTop: 4 }}>EMAIL CANNOT BE CHANGED YET</Mono>
+            <Sans size={14} style={{ color: GP.inkMute }}>@{user?.username}</Sans>
+            <Mono size={8} dim style={{ marginTop: 4 }}>
+              THIS IS HOW FRIENDS FIND YOU · CANNOT BE CHANGED YET
+            </Mono>
           </GPBox>
 
           {submitError ? (

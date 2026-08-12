@@ -14,7 +14,15 @@ exports.createGoal = asyncHandler(async (req, res) => {
 exports.getGoals = asyncHandler(async (req, res) => {
   const { status, category, sortBy = 'createdAt', order = 'desc', limit = 20, page = 1 } = req.query;
 
-  const filter = { userId: req.user._id };
+  // Goals you own plus goals you joined. Invitations you haven't answered are
+  // deliberately excluded — they surface separately so an unanswered invite
+  // doesn't sit in your list looking like something you committed to.
+  const filter = {
+    $or: [
+      { userId: req.user._id },
+      { members: { $elemMatch: { userId: req.user._id, status: 'active' } } }
+    ]
+  };
   if (status) filter.status = status;
   if (category) filter.category = category;
 
@@ -46,18 +54,41 @@ exports.getGoals = asyncHandler(async (req, res) => {
 });
 
 exports.getGoal = asyncHandler(async (req, res) => {
-  const goal = await Goal.findOne({ _id: req.params.goalId, userId: req.user._id })
-    .populate('milestones', 'title status completedDate targetDate order')
+  const goal = await Goal.findById(req.params.goalId)
+    .populate('milestones', 'title status completedDate targetDate order completions')
     .populate('habits', 'title frequency currentStreak status');
 
-  if (!goal) {
+  // Members can open a shared goal, so ownership is checked separately from
+  // existence — but both answer 404 so this can't be used to probe for ids.
+  if (!goal || !goal.isParticipant(req.user._id)) {
     return res.status(404).json({
       success: false,
       error: { code: 'NOT_FOUND', message: 'Goal not found' }
     });
   }
 
-  return res.status(200).json({ success: true, data: goal });
+  // On a shared goal the stored completionPercentage is the owner's. Everyone
+  // needs their own, so it is computed for the caller here.
+  const isOwner = String(goal.userId) === String(req.user._id);
+  const mode = goal.progressMode || 'separate';
+  const total = goal.milestones.length;
+  const completed = goal.milestones.filter((m) =>
+    m.isCompletedBy(req.user._id, goal.userId, mode)
+  ).length;
+
+  const data = goal.toObject();
+  data.isOwner = isOwner;
+  data.myProgress = {
+    total,
+    completed,
+    percentage: total > 0 ? Math.round((completed / total) * 100) : 0
+  };
+  data.milestones = goal.milestones.map((m) => ({
+    ...m.toObject(),
+    completedByMe: m.isCompletedBy(req.user._id, goal.userId, mode)
+  }));
+
+  return res.status(200).json({ success: true, data });
 });
 
 exports.updateGoal = asyncHandler(async (req, res) => {

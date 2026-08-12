@@ -6,15 +6,36 @@ const passwordRules = Joi.string()
   .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
   .message('Password must contain at least one uppercase letter, one lowercase letter, and one number');
 
+// Mirrors USERNAME_PATTERN on the User model. Kept as its own rule so the API
+// rejects a bad username with a readable message before Mongoose ever sees it.
+const usernameRules = Joi.string()
+  .trim()
+  .lowercase()
+  .min(3)
+  .max(20)
+  .pattern(/^[a-z0-9_]+$/)
+  .message('Username can only use letters, numbers and underscore');
+
+// Signup collects no PII by design: a username and a password, nothing else.
 exports.signupSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: passwordRules.required(),
-  firstName: Joi.string().trim().min(1).max(50).required(),
-  lastName: Joi.string().trim().min(1).max(50).required()
+  username: usernameRules.required(),
+  password: passwordRules.required()
 });
 
 exports.signinSchema = Joi.object({
-  email: Joi.string().email().required(),
+  username: usernameRules.required(),
+  password: Joi.string().required()
+});
+
+exports.recoverSchema = Joi.object({
+  username: usernameRules.required(),
+  // Dashes, spacing and case are normalised before comparison, so the shape is
+  // left loose here rather than demanding the exact GP-XXXX-XXXX-XXXX form.
+  recoveryCode: Joi.string().trim().min(8).max(40).required(),
+  newPassword: passwordRules.required()
+});
+
+exports.regenerateRecoveryCodeSchema = Joi.object({
   password: Joi.string().required()
 });
 

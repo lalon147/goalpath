@@ -5,6 +5,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGoals } from '../../redux/slices/goalsSlice';
+import { fetchGoalInvitations, respondToGoalInvite } from '../../redux/slices/friendsSlice';
 import { GP } from '../../theme/GP';
 import { Mono, Sans, GPBox, GPRow, Chip } from '../../components/gp/primitives';
 
@@ -19,11 +20,61 @@ const CATEGORY_COLORS = {
 export default function GoalsScreen({ navigation }) {
   const dispatch = useDispatch();
   const { list: goals, loading } = useSelector((s) => s.goals);
+  const { goalInvitations } = useSelector((s) => s.friends);
   const [filter, setFilter] = useState('All');
 
   useEffect(() => {
     dispatch(fetchGoals(filter !== 'All' ? { status: filter.toLowerCase() } : {}));
   }, [filter]);
+
+  // Invitations are deliberately not part of the goals list — an unanswered
+  // invite is not yet yours — so they are fetched and shown separately.
+  useEffect(() => {
+    dispatch(fetchGoalInvitations());
+  }, [dispatch]);
+
+  const answerInvite = async (goalId, accept) => {
+    await dispatch(respondToGoalInvite({ goalId, accept }));
+    // Accepting adds it to your goals, so the list behind this is now stale.
+    if (accept) dispatch(fetchGoals(filter !== 'All' ? { status: filter.toLowerCase() } : {}));
+  };
+
+  const invitationsHeader = goalInvitations.length > 0 && (
+    <View style={{ marginBottom: 14 }}>
+      <Mono size={7} dim style={{ marginBottom: 8 }}>
+        GOAL INVITATIONS ({goalInvitations.length})
+      </Mono>
+      {goalInvitations.map((inv) => (
+        <GPBox key={inv.goalId} style={styles.inviteCard}>
+          <Mono size={7} accent>
+            @{inv.owner.username} INVITED YOU · {inv.progressMode === 'shared' ? 'SHARED' : 'SEPARATE'} PROGRESS
+          </Mono>
+          <Sans size={15} weight="700" style={{ marginTop: 6 }}>
+            {inv.emoji} {inv.title}
+          </Sans>
+          {!!inv.description && (
+            <Sans size={12} color={GP.inkDim} style={{ marginTop: 4, lineHeight: 18 }}>
+              {inv.description}
+            </Sans>
+          )}
+          <GPRow gap={8} style={{ marginTop: 12 }}>
+            <TouchableOpacity
+              style={[styles.inviteBtn, { borderColor: GP.cyan }]}
+              onPress={() => answerInvite(inv.goalId, true)}
+            >
+              <Mono size={9} accent>◉ JOIN</Mono>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.inviteBtn, { borderColor: GP.line }]}
+              onPress={() => answerInvite(inv.goalId, false)}
+            >
+              <Mono size={9} dim>DECLINE</Mono>
+            </TouchableOpacity>
+          </GPRow>
+        </GPBox>
+      ))}
+    </View>
+  );
 
   const renderGoal = ({ item }) => (
     <TouchableOpacity
@@ -93,22 +144,26 @@ export default function GoalsScreen({ navigation }) {
         ))}
       </GPRow>
 
-      {loading && goals.length === 0 ? (
+      {loading && goals.length === 0 && goalInvitations.length === 0 ? (
         <View style={styles.center}>
           <ActivityIndicator color={GP.cyan} />
         </View>
-      ) : goals.length === 0 ? (
-        <View style={styles.center}>
-          <Mono size={9} accent style={{ marginBottom: 8 }}>◉ NO GOALS FOUND</Mono>
-          <Sans size={13} style={{ color: GP.inkDim }}>Tap + NEW to create your first goal</Sans>
-        </View>
       ) : (
+        // One list even when there are no goals, so a pending invitation still
+        // has somewhere to appear — it is the only way to accept one.
         <FlatList
           data={goals}
           renderItem={renderGoal}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          ListHeaderComponent={invitationsHeader || null}
+          ListEmptyComponent={
+            <View style={styles.emptyInline}>
+              <Mono size={9} accent style={{ marginBottom: 8 }}>◉ NO GOALS FOUND</Mono>
+              <Sans size={13} style={{ color: GP.inkDim }}>Tap + NEW to create your first goal</Sans>
+            </View>
+          }
         />
       )}
     </SafeAreaView>
@@ -165,4 +220,19 @@ const styles = StyleSheet.create({
     borderRadius: 1,
   },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  emptyInline: { alignItems: 'center', paddingTop: 40 },
+  inviteCard: {
+    backgroundColor: GP.bg2,
+    borderColor: GP.cyan,
+    padding: 14,
+    marginBottom: 8,
+  },
+  inviteBtn: {
+    flex: 1,
+    height: 36,
+    borderWidth: 1,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

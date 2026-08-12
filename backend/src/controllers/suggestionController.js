@@ -14,13 +14,17 @@ exports.suggest = asyncHandler(async (req, res) => {
     });
   }
 
-  const { kind, title, category, description } = req.body;
+  const { kind, title, category, description, weeks } = req.body;
 
   try {
-    const data =
-      kind === 'habits'
-        ? { habits: await suggestionService.suggestHabits({ title, category }) }
-        : { milestones: await suggestionService.suggestMilestones({ title, category, description }) };
+    let data;
+    if (kind === 'habits') {
+      data = { habits: await suggestionService.suggestHabits({ title, category }) };
+    } else if (kind === 'daily-practice') {
+      data = await suggestionService.suggestDailyPractice({ title, category, description, weeks });
+    } else {
+      data = { milestones: await suggestionService.suggestMilestones({ title, category, description }) };
+    }
 
     return res.status(200).json({ success: true, data });
   } catch (err) {

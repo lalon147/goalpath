@@ -12,15 +12,14 @@ export default function SignInScreen({ navigation }) {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((s) => s.auth);
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const e = {};
-    if (!email.trim()) e.email = 'Email is required';
-    else if (!/^\S+@\S+\.\S+$/.test(email)) e.email = 'Enter a valid email';
+    if (!username.trim()) e.username = 'Username is required';
     if (!password) e.password = 'Password is required';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -29,7 +28,7 @@ export default function SignInScreen({ navigation }) {
   const handleSignIn = () => {
     dispatch(clearError());
     if (!validate()) return;
-    dispatch(signin({ email: email.trim().toLowerCase(), password }));
+    dispatch(signin({ username: username.trim().toLowerCase(), password }));
   };
 
   return (
@@ -50,19 +49,19 @@ export default function SignInScreen({ navigation }) {
           )}
 
           <View style={styles.fieldWrap}>
-            <Text style={styles.fieldLabel}>◆ EMAIL</Text>
-            <View style={[styles.inputBox, errors.email && styles.inputError]}>
+            <Text style={styles.fieldLabel}>◆ USERNAME</Text>
+            <View style={[styles.inputBox, errors.username && styles.inputError]}>
               <TextInput
                 style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                placeholder="you@example.com"
+                value={username}
+                onChangeText={(v) => setUsername(v.replace(/\s/g, '').toLowerCase())}
+                placeholder="yourname"
                 placeholderTextColor={GP.inkMute}
-                keyboardType="email-address"
                 autoCapitalize="none"
+                autoCorrect={false}
               />
             </View>
-            {errors.email ? <Text style={styles.fieldError}>{errors.email}</Text> : null}
+            {errors.username ? <Text style={styles.fieldError}>{errors.username}</Text> : null}
           </View>
 
           <View style={styles.fieldWrap}>

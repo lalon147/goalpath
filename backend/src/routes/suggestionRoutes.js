@@ -7,10 +7,13 @@ const auth = require('../middleware/auth');
 const { validate } = require('../validators/authValidator');
 
 const suggestSchema = Joi.object({
-  kind: Joi.string().valid('milestones', 'habits').required(),
+  kind: Joi.string().valid('milestones', 'habits', 'daily-practice').required(),
   title: Joi.string().trim().min(3).max(200).required(),
   category: Joi.string().max(50).allow('', null),
-  description: Joi.string().max(1000).allow('', null)
+  description: Joi.string().max(1000).allow('', null),
+  // Only meaningful for 'daily-practice'; capped so one request cannot ask for
+  // an unbounded plan.
+  weeks: Joi.number().integer().min(4).max(12)
 });
 
 // Every request here costs money, so this is throttled well below the global

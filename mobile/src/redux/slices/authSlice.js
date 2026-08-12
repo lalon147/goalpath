@@ -85,9 +85,15 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     initializing: true,
+    // Held here rather than in the signup screen's local state because signing
+    // up flips isAuthenticated, which swaps the whole navigator out from under
+    // that screen. Parking it in the store lets the navigator show the code and
+    // makes it impossible to walk past — losing it means losing the account.
+    recoveryCode: null,
   },
   reducers: {
     clearError: (state) => { state.error = null; },
+    acknowledgeRecoveryCode: (state) => { state.recoveryCode = null; },
   },
   extraReducers: (builder) => {
     const pending = (state) => { state.loading = true; state.error = null; };
@@ -107,6 +113,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.isAuthenticated = true;
+        state.recoveryCode = action.payload.recoveryCode || null;
       })
       .addCase(signup.rejected, rejected)
 
@@ -132,5 +139,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, acknowledgeRecoveryCode } = authSlice.actions;
 export default authSlice.reducer;

@@ -47,7 +47,29 @@ const goalSchema = new mongoose.Schema({
   color: { type: String, default: '#6C63FF' },
   emoji: { type: String, default: '🎯' },
   milestones: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Milestone' }],
-  habits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Habit' }]
+  habits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Habit' }],
+
+  // How a shared goal counts progress:
+  //   separate — everyone works the same milestone list on their own copy, and
+  //              each person has their own percentage (a race, or parallel runs)
+  //   shared   — one tick list for the whole group; whoever completes a
+  //              milestone completes it for everybody (a joint project)
+  // Goals that are not shared at all are simply goals with no members, which is
+  // the "different goal, different progress" case and needs nothing here.
+  progressMode: {
+    type: String,
+    enum: ['separate', 'shared'],
+    default: 'separate'
+  },
+
+  // Shared goals: `userId` stays the owner, `members` are everyone else who was
+  // invited.
+  members: [{
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    status: { type: String, enum: ['invited', 'active', 'declined'], default: 'invited' },
+    invitedAt: { type: Date, default: Date.now },
+    joinedAt: { type: Date, default: null }
+  }]
 }, {
   timestamps: true
 });
@@ -55,6 +77,24 @@ const goalSchema = new mongoose.Schema({
 goalSchema.index({ userId: 1, status: 1 });
 goalSchema.index({ userId: 1, createdAt: -1 });
 goalSchema.index({ userId: 1, targetDate: 1 });
+// Lets "goals shared with me" be a single indexed query rather than a scan.
+goalSchema.index({ 'members.userId': 1, 'members.status': 1 });
+
+/** True when this user owns the goal or has joined it. */
+goalSchema.methods.isParticipant = function (userId) {
+  if (String(this.userId) === String(userId)) return true;
+  return this.members.some(
+    (m) => String(m.userId) === String(userId) && m.status === 'active'
+  );
+};
+
+/** Owner plus everyone who accepted — the people who appear on the leaderboard. */
+goalSchema.methods.participantIds = function () {
+  return [
+    this.userId,
+    ...this.members.filter((m) => m.status === 'active').map((m) => m.userId)
+  ];
+};
 
 goalSchema.methods.recalculateProgress = async function () {
   const Milestone = mongoose.model('Milestone');

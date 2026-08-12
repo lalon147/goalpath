@@ -178,16 +178,16 @@ export default function EditProfilePage() {
           </div>
 
           <div style={{ marginBottom: 24 }}>
-            <Mono size={11} dim style={{ display: 'block', marginBottom: 6, letterSpacing: 1.5 }}>◆ EMAIL</Mono>
+            <Mono size={11} dim style={{ display: 'block', marginBottom: 6, letterSpacing: 1.5 }}>◆ USERNAME</Mono>
             <div style={{
               border: `1px solid ${GP.line}`,
               borderRadius: 4,
               background: GP.bg2,
               padding: '12px 14px',
             }}>
-              <Sans size={14} color={GP.inkMute}>{user?.email || '—'}</Sans>
+              <Sans size={14} color={GP.inkMute}>@{user?.username || '—'}</Sans>
               <Mono size={10} dim style={{ display: 'block', marginTop: 4 }}>
-                EMAIL CANNOT BE CHANGED YET
+                THIS IS HOW FRIENDS FIND YOU · CANNOT BE CHANGED YET
               </Mono>
             </div>
           </div>

@@ -22,7 +22,8 @@ exports.updateGoalSchema = Joi.object({
   priority: Joi.string().valid('low', 'medium', 'high'),
   status: Joi.string().valid('active', 'completed', 'paused', 'abandoned'),
   color: Joi.string().pattern(/^#[0-9A-Fa-f]{6}$/),
-  emoji: Joi.string().max(10)
+  emoji: Joi.string().max(10),
+  progressMode: Joi.string().valid('separate', 'shared')
 });
 
 exports.createMilestoneSchema = Joi.object({

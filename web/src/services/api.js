@@ -43,6 +43,9 @@ export const authAPI = {
   signup: (data) => api.post('/auth/signup', data),
   signin: (data) => api.post('/auth/signin', data),
   logout: (refreshToken) => api.post('/auth/logout', { refreshToken }),
+  usernameAvailable: (username) => api.get('/auth/username-available', { params: { username } }),
+  recover: (data) => api.post('/auth/recover', data),
+  regenerateRecoveryCode: (password) => api.post('/auth/recovery-code', { password }),
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   resetPassword: (data) => api.post('/auth/reset-password', data),
 };
@@ -66,6 +69,7 @@ export const milestonesAPI = {
   getAll: (goalId, params) => api.get(`/goals/${goalId}/milestones`, { params }),
   update: (goalId, id, data) => api.put(`/goals/${goalId}/milestones/${id}`, data),
   complete: (goalId, id) => api.post(`/goals/${goalId}/milestones/${id}/complete`),
+  uncomplete: (goalId, id) => api.delete(`/goals/${goalId}/milestones/${id}/complete`),
   delete: (goalId, id) => api.delete(`/goals/${goalId}/milestones/${id}`),
 };
 
@@ -77,10 +81,32 @@ export const habitsAPI = {
   delete: (id) => api.delete(`/habits/${id}`),
   log: (id, data) => api.post(`/habits/${id}/log`, data),
   getLogs: (id, params) => api.get(`/habits/${id}/logs`, { params }),
+  // Whole-week grid for every habit at once, and an upsert for a single day.
+  week: (start) => api.get('/habits/logs/week', { params: start ? { start } : {} }),
+  setDay: (id, payload) => api.put(`/habits/${id}/logs/by-date`, payload),
 };
 
 export const suggestionsAPI = {
   generate: (data) => api.post('/suggestions', data),
+};
+
+export const friendsAPI = {
+  list: () => api.get('/friends'),
+  search: (q) => api.get('/friends/search', { params: { q } }),
+  requests: () => api.get('/friends/requests'),
+  // Takes { userId } or { username } — adding by handle needs no search first.
+  sendRequest: (payload) => api.post('/friends/requests', payload),
+  accept: (id) => api.post(`/friends/requests/${id}/accept`),
+  decline: (id) => api.post(`/friends/requests/${id}/decline`),
+  remove: (id) => api.delete(`/friends/${id}`),
+};
+
+export const goalMembersAPI = {
+  invite: (goalId, payload) => api.post(`/goals/${goalId}/members`, payload),
+  respond: (goalId, accept) => api.post(`/goals/${goalId}/members/respond`, { accept }),
+  leaderboard: (goalId) => api.get(`/goals/${goalId}/leaderboard`),
+  remove: (goalId, userId) => api.delete(`/goals/${goalId}/members/${userId}`),
+  invitations: () => api.get('/goals/invitations/pending'),
 };
 
 export const analyticsAPI = {

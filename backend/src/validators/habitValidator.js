@@ -46,6 +46,15 @@ exports.logHabitSchema = Joi.object({
   intensity: Joi.string().valid('low', 'medium', 'high')
 });
 
+// `status: null` is meaningful here — it clears the day rather than setting it,
+// which is how the week grid undoes a mis-tap.
+exports.setLogByDateSchema = Joi.object({
+  date: Joi.date().iso().required(),
+  status: Joi.string().valid('completed', 'skipped', 'failed').allow(null).required(),
+  notes: Joi.string().max(500).allow(''),
+  duration: Joi.number().integer().min(0)
+});
+
 exports.updateLogSchema = Joi.object({
   status: Joi.string().valid('completed', 'skipped', 'failed'),
   notes: Joi.string().max(500).allow(''),

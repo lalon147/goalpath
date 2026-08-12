@@ -20,18 +20,78 @@ const generateTokens = (userId) => {
   return { accessToken, refreshToken, expiresIn: 3600 };
 };
 
-exports.signup = asyncHandler(async (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
+// GET /api/auth/username-available?username=
+exports.usernameAvailable = asyncHandler(async (req, res) => {
+  const username = User.normalizeUsername(req.query.username);
 
-  const existing = await User.findOne({ email });
-  if (existing) {
-    return res.status(409).json({
-      success: false,
-      error: { code: 'EMAIL_EXISTS', message: 'Email already registered' }
+  if (!User.isValidUsername(username)) {
+    return res.status(200).json({
+      success: true,
+      data: {
+        username,
+        available: false,
+        reason: '3–20 characters, using letters, numbers or underscore'
+      }
     });
   }
 
-  const user = await User.create({ email, password, firstName, lastName });
+  const taken = await User.exists({ username });
+  return res.status(200).json({
+    success: true,
+    data: {
+      username,
+      available: !taken,
+      reason: taken ? 'That username is taken' : null,
+      // Only computed when it would actually be shown; the lookup is wasted work
+      // for the common case where the name is free.
+      suggestion: taken ? await User.generateUniqueUsername(username) : null
+    }
+  });
+});
+
+exports.signup = asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
+  const normalized = User.normalizeUsername(username);
+
+  const existing = await User.findOne({ username: normalized });
+  if (existing) {
+    return res.status(409).json({
+      success: false,
+      error: {
+        code: 'USERNAME_EXISTS',
+        message: 'That username is taken',
+        details: { suggestion: await User.generateUniqueUsername(normalized) }
+      }
+    });
+  }
+
+  // Shown exactly once, in this response. Only the hash is kept, so it cannot
+  // be recovered or re-sent later — losing it means losing the account.
+  const recoveryCode = User.generateRecoveryCode();
+
+  let user;
+  try {
+    user = await User.create({
+      username: normalized,
+      password,
+      recoveryCodeHash: await User.hashRecoveryCode(recoveryCode)
+    });
+  } catch (err) {
+    // Two signups racing on the same name both pass the check above; the unique
+    // index is what actually settles it, so translate that into the same 409.
+    if (err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        error: {
+          code: 'USERNAME_EXISTS',
+          message: 'That username is taken',
+          details: { suggestion: await User.generateUniqueUsername(normalized) }
+        }
+      });
+    }
+    throw err;
+  }
+
   const { accessToken, refreshToken, expiresIn } = generateTokens(user._id);
 
   user.refreshTokens.push(refreshToken);
@@ -42,24 +102,26 @@ exports.signup = asyncHandler(async (req, res) => {
     data: {
       user: {
         id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        username: user.username,
+        displayName: user.displayName,
         createdAt: user.createdAt
       },
+      recoveryCode,
       tokens: { accessToken, refreshToken, expiresIn }
     }
   });
 });
 
 exports.signin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ username: User.normalizeUsername(username) })
+    .select('+password');
+
   if (!user || !(await user.comparePassword(password))) {
     return res.status(401).json({
       success: false,
-      error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' }
+      error: { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password' }
     });
   }
 
@@ -83,7 +145,8 @@ exports.signin = asyncHandler(async (req, res) => {
     data: {
       user: {
         id: user._id,
-        email: user.email,
+        username: user.username,
+        displayName: user.displayName,
         firstName: user.firstName,
         lastName: user.lastName
       },
@@ -129,7 +192,8 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
 
   // Always answer the same way. Varying the response by whether the address
   // exists would turn this endpoint into a way to enumerate registered users.
-  if (user) {
+  // PII-free accounts have no email at all and recover via /auth/recover.
+  if (user && user.email) {
     const rawToken = crypto.randomBytes(32).toString('hex');
 
     // One live token per user: issuing a new link invalidates any earlier one.
@@ -174,6 +238,66 @@ exports.resetPassword = asyncHandler(async (req, res) => {
   return res.status(200).json({
     success: true,
     message: 'Password has been reset. Please sign in with your new password.'
+  });
+});
+
+// POST /api/auth/recover  { username, recoveryCode, newPassword }
+//
+// The way back in for accounts with no email. Deliberately kept separate from
+// resetPassword: that flow proves ownership of an inbox, this one proves
+// possession of a secret shown once at signup.
+exports.recoverWithCode = asyncHandler(async (req, res) => {
+  const { username, recoveryCode, newPassword } = req.body;
+
+  const user = await User.findOne({ username: User.normalizeUsername(username) })
+    .select('+recoveryCodeHash');
+
+  // One message for "no such user", "no code set" and "wrong code" alike —
+  // splitting them would confirm which usernames exist to anyone guessing.
+  const invalid = () => res.status(400).json({
+    success: false,
+    error: { code: 'INVALID_RECOVERY', message: 'Username or recovery code is incorrect' }
+  });
+
+  if (!user || !user.recoveryCodeHash) return invalid();
+  if (!(await user.compareRecoveryCode(recoveryCode))) return invalid();
+
+  user.password = newPassword;
+  // The old code is spent. Whoever recovers the account gets a fresh one, so a
+  // code that leaked cannot be replayed against it later.
+  const nextCode = User.generateRecoveryCode();
+  user.recoveryCodeHash = await User.hashRecoveryCode(nextCode);
+  user.resetTokens = [];
+  user.refreshTokens = [];
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    data: { recoveryCode: nextCode },
+    message: 'Password reset. Save your new recovery code — it is shown only once.'
+  });
+});
+
+// POST /api/auth/recovery-code (authed) — issue or replace this account's code.
+// Existing accounts created before recovery codes have none until they call this.
+exports.regenerateRecoveryCode = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select('+password +recoveryCodeHash');
+
+  if (!(await user.comparePassword(req.body.password))) {
+    return res.status(401).json({
+      success: false,
+      error: { code: 'INVALID_CREDENTIALS', message: 'Password is incorrect' }
+    });
+  }
+
+  const recoveryCode = User.generateRecoveryCode();
+  user.recoveryCodeHash = await User.hashRecoveryCode(recoveryCode);
+  await user.save();
+
+  return res.status(200).json({
+    success: true,
+    data: { recoveryCode },
+    message: 'Save this code. It is shown only once and replaces any previous one.'
   });
 });
 

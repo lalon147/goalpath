@@ -22,9 +22,14 @@ export default function GoalDetailPage() {
 
   useEffect(() => { dispatch(fetchGoal(id)); }, [dispatch, id]);
 
-  const handleCompleteMilestone = (milestoneId) => {
-    dispatch(completeMilestone({ goalId: id, milestoneId }));
+  const handleToggleMilestone = (milestoneId, done) => {
+    dispatch(completeMilestone({ goalId: id, milestoneId, done: !done }));
   };
+
+  // On a shared goal `status` is the owner's (or the group's in shared mode);
+  // `completedByMe` is what this user has actually ticked, so it wins whenever
+  // the server sent it.
+  const isDone = (m) => m.completedByMe ?? (m.status === 'completed');
 
   const handleDelete = async () => {
     await dispatch(deleteGoal(id));
@@ -59,7 +64,7 @@ export default function GoalDetailPage() {
   // Build a simple pace sparkline based on milestone completion
   const milestones = goal.milestones || [];
   const totalMilestones = milestones.length;
-  const completedMilestones = milestones.filter((m) => m.status === 'completed').length;
+  const completedMilestones = milestones.filter(isDone).length;
 
   // Pace chart dimensions
   const chartW = 320;
@@ -67,7 +72,7 @@ export default function GoalDetailPage() {
   const pacePoints = totalMilestones > 0
     ? milestones.map((m, i) => {
         const x = (i / Math.max(totalMilestones - 1, 1)) * chartW;
-        const y = chartH - (m.status === 'completed' ? ((i + 1) / totalMilestones) * chartH : (i / totalMilestones) * chartH);
+        const y = chartH - (isDone(m) ? ((i + 1) / totalMilestones) * chartH : (i / totalMilestones) * chartH);
         return `${x},${y}`;
       })
     : [`0,${chartH}`, `${chartW},${chartH}`];
@@ -180,6 +185,26 @@ export default function GoalDetailPage() {
           </svg>
         </div>
 
+        {/* Shared goal */}
+        <button
+          type="button"
+          onClick={() => navigate(`/goals/${id}/members`)}
+          style={{
+            display: 'block', width: '100%', textAlign: 'left', cursor: 'pointer',
+            background: GP.bg2, border: `1px solid ${GP.cyan}`, borderRadius: 4,
+            padding: 16, marginBottom: 16,
+          }}
+        >
+          <Mono size={10} accent style={{ display: 'block', letterSpacing: 1.5 }}>
+            ◆ {goal.isShared ? 'SHARED GOAL' : 'DO THIS WITH FRIENDS'} ▸
+          </Mono>
+          <Sans size={13} style={{ color: GP.inkDim, display: 'block', marginTop: 5 }}>
+            {goal.isShared
+              ? `${goal.progressMode === 'shared' ? 'Shared' : 'Separate'} progress · see the leaderboard`
+              : 'Invite a friend and track it together'}
+          </Sans>
+        </button>
+
         {/* Milestones */}
         {milestones.length > 0 && (
           <div style={{ marginBottom: 16 }}>
@@ -189,7 +214,7 @@ export default function GoalDetailPage() {
                 <div
                   key={m._id}
                   style={{
-                    border: `1px solid ${m.status === 'completed' ? 'rgba(120,180,255,0.3)' : GP.line}`,
+                    border: `1px solid ${isDone(m) ? 'rgba(120,180,255,0.3)' : GP.line}`,
                     borderRadius: 4,
                     padding: '10px 14px',
                     background: GP.bg2,
@@ -199,14 +224,14 @@ export default function GoalDetailPage() {
                   }}
                 >
                   <button
-                    onClick={() => m.status !== 'completed' && handleCompleteMilestone(m._id)}
+                    onClick={() => handleToggleMilestone(m._id, isDone(m))}
                     style={{
                       background: 'none',
                       border: 'none',
-                      cursor: m.status === 'completed' ? 'default' : 'pointer',
+                      cursor: 'pointer',
                       fontFamily: GP.mono,
                       fontSize: 14,
-                      color: m.status === 'completed' ? GP.cyan : GP.inkMute,
+                      color: isDone(m) ? GP.cyan : GP.inkMute,
                       padding: 0,
                       lineHeight: 1,
                     }}
@@ -215,8 +240,8 @@ export default function GoalDetailPage() {
                   </button>
                   <div style={{ flex: 1 }}>
                     <Sans size={13} weight={500} style={{
-                      color: m.status === 'completed' ? GP.inkDim : GP.ink,
-                      textDecoration: m.status === 'completed' ? 'line-through' : 'none',
+                      color: isDone(m) ? GP.inkDim : GP.ink,
+                      textDecoration: isDone(m) ? 'line-through' : 'none',
                     }}>
                       {m.title}
                     </Sans>

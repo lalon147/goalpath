@@ -36,6 +36,7 @@ export async function buildExport(user) {
     format: 'goalpath.export.v1',
     account: user
       ? {
+          username: user.username,
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,

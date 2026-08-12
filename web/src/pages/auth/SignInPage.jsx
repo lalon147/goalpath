@@ -15,14 +15,13 @@ export default function SignInPage() {
   // so landing back here reads as expected rather than as a lost session.
   const notice = location.state?.notice;
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
   const validate = () => {
     const e = {};
-    if (!email.trim()) e.email = 'Required';
-    else if (!/^\S+@\S+\.\S+$/.test(email)) e.email = 'Invalid email';
+    if (!username.trim()) e.username = 'Required';
     if (!password) e.password = 'Required';
     setErrors(e);
     return !Object.keys(e).length;
@@ -32,7 +31,7 @@ export default function SignInPage() {
     e.preventDefault();
     dispatch(clearError());
     if (!validate()) return;
-    const result = await dispatch(signin({ email: email.trim().toLowerCase(), password }));
+    const result = await dispatch(signin({ username: username.trim().toLowerCase(), password }));
     if (!result.error) navigate('/dashboard');
   };
 
@@ -86,8 +85,9 @@ export default function SignInPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          <GPInput label="Email" value={email} onChange={setEmail}
-            type="email" placeholder="you@example.com" error={errors.email} />
+          <GPInput label="Username" value={username}
+            onChange={(v) => setUsername(v.replace(/\s/g, '').toLowerCase())}
+            placeholder="yourname" error={errors.username} />
           <GPInput label="Password" value={password} onChange={setPassword}
             type="password" placeholder="Your password" error={errors.password} />
 

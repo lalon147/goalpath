@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import goalsReducer from './slices/goalsSlice';
 import habitsReducer from './slices/habitsSlice';
 import analyticsReducer from './slices/analyticsSlice';
+import friendsReducer from './slices/friendsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     goals: goalsReducer,
     habits: habitsReducer,
     analytics: analyticsReducer,
+    friends: friendsReducer,
   },
 });

@@ -1,26 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { signup, clearError } from '../../store/slices/authSlice';
+import { authAPI } from '../../services/api';
 import { GP } from '../../theme/GP';
 import { GPInput, GPButton, Mono, Sans } from '../../components/primitives';
+
+const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
 
 export default function SignUpPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((s) => s.auth);
 
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
+  const [check, setCheck] = useState({ state: 'idle', reason: null, suggestion: null });
 
-  const set = (field) => (val) => setForm((f) => ({ ...f, [field]: val }));
+  const set = (field) => (val) =>
+    setForm((f) => ({ ...f, [field]: field === 'username' ? val.replace(/\s/g, '').toLowerCase() : val }));
+
+  // Every keystroke would otherwise be a request. The timer is cleared on each
+  // change so only the pause at the end of typing actually asks the server.
+  const timer = useRef(null);
+  const latest = useRef('');
+  latest.current = form.username.trim().toLowerCase();
+
+  useEffect(() => {
+    clearTimeout(timer.current);
+    const name = form.username.trim().toLowerCase();
+
+    if (!name) { setCheck({ state: 'idle', reason: null, suggestion: null }); return; }
+    if (!USERNAME_RE.test(name)) {
+      setCheck({ state: 'invalid', reason: '3–20 characters: letters, numbers or underscore', suggestion: null });
+      return;
+    }
+
+    setCheck({ state: 'checking', reason: null, suggestion: null });
+    timer.current = setTimeout(async () => {
+      try {
+        const { data } = await authAPI.usernameAvailable(name);
+        // A late answer about an older name must not overwrite the current one.
+        if (latest.current !== name) return;
+        setCheck({
+          state: data.data.available ? 'free' : 'taken',
+          reason: data.data.reason,
+          suggestion: data.data.suggestion,
+        });
+      } catch {
+        // An unreachable server is not a verdict on the name; signup itself
+        // still rejects duplicates, so stay quiet rather than block the user.
+        setCheck({ state: 'idle', reason: null, suggestion: null });
+      }
+    }, 400);
+
+    return () => clearTimeout(timer.current);
+  }, [form.username]);
 
   const validate = () => {
     const e = {};
-    if (!form.firstName.trim()) e.firstName = 'Required';
-    if (!form.lastName.trim()) e.lastName = 'Required';
-    if (!form.email.trim()) e.email = 'Required';
-    else if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = 'Invalid email';
+    const name = form.username.trim().toLowerCase();
+    if (!name) e.username = 'Required';
+    else if (!USERNAME_RE.test(name)) e.username = '3–20 characters: letters, numbers or underscore';
+    else if (check.state === 'taken') e.username = 'That username is taken';
     if (!form.password) e.password = 'Required';
     else if (form.password.length < 8) e.password = 'Min 8 characters';
     else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(form.password))
@@ -33,8 +75,9 @@ export default function SignUpPage() {
     e.preventDefault();
     dispatch(clearError());
     if (!validate()) return;
-    const result = await dispatch(signup({ ...form, email: form.email.trim().toLowerCase() }));
-    if (!result.error) navigate('/dashboard');
+    // No navigate() here: signing up sets a recovery code in the store and the
+    // router shows that screen until it is acknowledged.
+    await dispatch(signup({ username: form.username.trim().toLowerCase(), password: form.password }));
   };
 
   return (
@@ -55,7 +98,9 @@ export default function SignUpPage() {
             ◆ GOALPATH · REGISTER
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>Create Account</Sans>
-          <Sans size={14} style={{ color: GP.inkDim, display: 'block' }}>Start your mission.</Sans>
+          <Sans size={14} style={{ color: GP.inkDim, display: 'block' }}>
+            Pick a username and a password. That is all — no email, no real name.
+          </Sans>
         </div>
 
         {error && (
@@ -71,20 +116,45 @@ export default function SignUpPage() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <div style={{ flex: 1 }}>
-              <GPInput label="First Name" value={form.firstName} onChange={set('firstName')}
-                placeholder="John" error={errors.firstName} />
-            </div>
-            <div style={{ flex: 1 }}>
-              <GPInput label="Last Name" value={form.lastName} onChange={set('lastName')}
-                placeholder="Doe" error={errors.lastName} />
-            </div>
+          <GPInput label="Username" value={form.username} onChange={set('username')}
+            placeholder="yourname" error={errors.username} />
+
+          <div style={{ marginTop: -12, marginBottom: 14, minHeight: 16 }}>
+            {check.state === 'checking' && <Mono size={10} style={{ color: GP.inkMute }}>CHECKING…</Mono>}
+            {check.state === 'free' && <Mono size={10} style={{ color: GP.cyan }}>✓ AVAILABLE</Mono>}
+            {(check.state === 'taken' || check.state === 'invalid') && (
+              <Mono size={10} style={{ color: GP.magenta }}>
+                ✕ {check.reason}
+              </Mono>
+            )}
+            {check.state === 'taken' && check.suggestion && (
+              <button
+                type="button"
+                onClick={() => set('username')(check.suggestion)}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  padding: 0, marginLeft: 10, fontFamily: GP.mono, fontSize: 10,
+                  color: GP.cyan, letterSpacing: 1,
+                }}
+              >
+                TRY @{check.suggestion} ▸
+              </button>
+            )}
           </div>
-          <GPInput label="Email" value={form.email} onChange={set('email')}
-            type="email" placeholder="you@example.com" error={errors.email} />
+
           <GPInput label="Password" value={form.password} onChange={set('password')}
             type="password" placeholder="Min. 8 characters" error={errors.password} />
+
+          <div style={{
+            background: GP.bg2, border: `1px solid ${GP.line}`, borderRadius: 4,
+            padding: 14, marginBottom: 18,
+          }}>
+            <Sans size={12} style={{ color: GP.inkDim, lineHeight: 1.6 }}>
+              Your username is how friends find you. After signing up you get a
+              recovery code — it is the only way back in if you forget your
+              password, so keep it somewhere safe.
+            </Sans>
+          </div>
 
           <GPButton
             onClick={handleSubmit}
