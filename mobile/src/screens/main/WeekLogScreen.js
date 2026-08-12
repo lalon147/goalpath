@@ -144,7 +144,7 @@ export default function WeekLogScreen({ navigation }) {
 
         <GPRow style={[styles.header, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
           <View>
-            <Mono size={8} accent>◆ GOALPATH · LOG</Mono>
+            <Mono size={8} accent>◆ LOCKED IN · LOG</Mono>
             <Sans size={20} weight="700" style={{ marginTop: 2 }}>This week</Sans>
           </View>
           <TouchableOpacity

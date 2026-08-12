@@ -83,7 +83,7 @@ export default function DailyPracticeScreen({ route, navigation }) {
         </TouchableOpacity>
 
         <View style={styles.header}>
-          <Mono size={8} accent>◆ GOALPATH · 1% BETTER</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · 1% BETTER</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Make it a daily habit</Sans>
           <Sans size={13} color={GP.inkDim} style={{ marginTop: 8, lineHeight: 20 }}>
             “{title}” is hard to act on today. This turns it into one small thing

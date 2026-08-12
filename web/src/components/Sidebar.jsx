@@ -51,7 +51,7 @@ export default function Sidebar() {
         transform: 'rotate(180deg)',
         textTransform: 'uppercase',
       }}>
-        GOALPATH
+        LOCKED IN
       </div>
 
       {/* Nav items */}

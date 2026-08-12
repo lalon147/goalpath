@@ -92,7 +92,7 @@ export default function FriendsScreen({ navigation }) {
 
   const shareUsername = () => {
     Share.share({
-      message: `Add me on GoalPath — my username is @${user?.username}`,
+      message: `Add me on LOCKED IN — my username is @${user?.username}`,
     }).catch(() => {});
   };
 
@@ -142,7 +142,7 @@ export default function FriendsScreen({ navigation }) {
       >
 
         <View style={styles.header}>
-          <Mono size={8} accent>◆ GOALPATH · SOCIAL</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · SOCIAL</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Friends</Sans>
         </View>
 

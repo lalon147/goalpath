@@ -61,7 +61,7 @@ export default function ForgotPasswordScreen({ navigation }) {
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scroll}>
           <View style={styles.header}>
-            <Text style={styles.hudLabel}>◆ GOALPATH · DONE</Text>
+            <Text style={styles.hudLabel}>◆ LOCKED IN · DONE</Text>
             <Text style={styles.title}>Password reset</Text>
             <Text style={styles.subtitle}>
               Your old recovery code has been used up. Here is the new one —
@@ -98,7 +98,7 @@ export default function ForgotPasswordScreen({ navigation }) {
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <Text style={styles.hudLabel}>◆ GOALPATH · RECOVER</Text>
+            <Text style={styles.hudLabel}>◆ LOCKED IN · RECOVER</Text>
             <Text style={styles.title}>Forgot password</Text>
             <Text style={styles.subtitle}>
               Enter the recovery code you saved when you signed up.
@@ -134,7 +134,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 style={[styles.input, { fontFamily: GP.mono, letterSpacing: 1 }]}
                 value={recoveryCode}
                 onChangeText={setRecoveryCode}
-                placeholder="GP-XXXX-XXXX-XXXX"
+                placeholder="LI-XXXX-XXXX-XXXX"
                 placeholderTextColor={GP.inkMute}
                 autoCapitalize="characters"
                 autoCorrect={false}

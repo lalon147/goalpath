@@ -1,4 +1,4 @@
-# GoalPath Development Environment Setup
+# LOCKED IN Development Environment Setup
 
 ## Prerequisites
 
@@ -321,7 +321,7 @@ Edit `app.json`:
 ```json
 {
   "expo": {
-    "name": "GoalPath",
+    "name": "LOCKED IN",
     "slug": "goalpath",
     "version": "1.0.0",
     "orientation": "portrait",

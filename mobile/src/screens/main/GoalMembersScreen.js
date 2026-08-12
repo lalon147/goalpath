@@ -148,7 +148,7 @@ export default function GoalMembersScreen({ route, navigation }) {
         </TouchableOpacity>
 
         <View style={styles.header}>
-          <Mono size={8} accent>◆ GOALPATH · SHARED GOAL</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · SHARED GOAL</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>{board?.title}</Sans>
         </View>
 

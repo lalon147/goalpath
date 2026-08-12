@@ -128,7 +128,7 @@ export default function GoalMembersPage() {
 
       <div style={{ marginBottom: 20 }}>
         <Mono size={10} accent style={{ display: 'block', letterSpacing: 2 }}>
-          ◆ GOALPATH · SHARED GOAL
+          ◆ LOCKED IN · SHARED GOAL
         </Mono>
         <Sans size={24} weight={700} style={{ display: 'block', marginTop: 4 }}>
           {board?.title}

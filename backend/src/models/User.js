@@ -155,8 +155,7 @@ userSchema.statics.isValidUsername = function (value) {
  * Turns arbitrary text into something the username rules accept, then walks
  * suffixes until it finds one nobody holds. Used by signup's suggestion and by
  * the backfill for accounts that predate usernames.
- */
-/**
+ *
  * `reserved` holds names handed out earlier in the same batch but not yet
  * written. Without it a caller generating several names in one pass can be
  * given the same name twice, since each check only sees what is already stored.
@@ -185,11 +184,11 @@ userSchema.statics.generateUniqueUsername = async function (seed, reserved = new
   }
 };
 
-/** Formats as GP-XXXX-XXXX-XXXX; the dashes are cosmetic and ignored on compare. */
+/** Formats as LI-XXXX-XXXX-XXXX; the dashes are cosmetic and ignored on compare. */
 userSchema.statics.generateRecoveryCode = function () {
   const pick = () => RECOVERY_ALPHABET[crypto.randomInt(0, RECOVERY_ALPHABET.length)];
   const group = () => Array.from({ length: 4 }, pick).join('');
-  return `GP-${group()}-${group()}-${group()}`;
+  return `LI-${group()}-${group()}-${group()}`;
 };
 
 userSchema.statics.hashRecoveryCode = (code) =>

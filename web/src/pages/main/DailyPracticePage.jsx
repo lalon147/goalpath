@@ -117,7 +117,7 @@ export default function DailyPracticePage() {
 
       <div style={{ marginBottom: 22 }}>
         <Mono size={10} style={{ color: GP.lime, display: 'block', letterSpacing: 2 }}>
-          ◆ GOALPATH · 1% BETTER
+          ◆ LOCKED IN · 1% BETTER
         </Mono>
         <Sans size={24} weight={700} style={{ display: 'block', marginTop: 4 }}>
           Make it a daily habit

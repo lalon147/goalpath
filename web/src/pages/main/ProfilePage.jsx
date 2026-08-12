@@ -247,7 +247,7 @@ export default function ProfilePage() {
         </div>
 
         <Mono size={10} dim style={{ display: 'block', textAlign: 'center' }}>
-          GOALPATH · BUILD 1.0 · {new Date().getFullYear()}
+          LOCKED IN · BUILD 1.0 · {new Date().getFullYear()}
         </Mono>
       </div>
     </Layout>

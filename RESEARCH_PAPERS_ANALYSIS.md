@@ -1,7 +1,7 @@
-# GoalPath Project - Research Paper Recommendations
+# LOCKED IN Project - Research Paper Recommendations
 
 ## Overview
-This section recommends two highly relevant academic papers for the GoalPath mobile application project. These papers address the core theoretical foundations of goal-setting, habit formation, behavioral change, and mobile health applications.
+This section recommends two highly relevant academic papers for the LOCKED IN mobile application project. These papers address the core theoretical foundations of goal-setting, habit formation, behavioral change, and mobile health applications.
 
 ---
 
@@ -23,32 +23,32 @@ This section recommends two highly relevant academic papers for the GoalPath mob
 ### Abstract Summary
 This landmark paper presents the most comprehensive review of goal-setting research spanning 35 years. Locke and Latham synthesize findings from over 400 studies to establish the most robust principles of goal-setting theory. The paper demonstrates that specific, challenging goals consistently lead to higher performance than vague or easy goals, and introduces the concept of goal commitment as a critical mediating variable. The authors establish meta-theoretical principles applicable across diverse domains including organizational performance, sports, clinical settings, and personal development.
 
-### Key Findings Relevant to GoalPath
+### Key Findings Relevant to LOCKED IN
 
 1. **Goal Specificity**
    - Vague goals (e.g., "do your best") are ineffective
    - Specific goals (e.g., "read 30 pages today") produce 25% better performance
-   - **GoalPath Application:** Goals should enforce specific, measurable targets with quantifiable metrics
+   - **LOCKED IN Application:** Goals should enforce specific, measurable targets with quantifiable metrics
 
 2. **Goal Difficulty & Challenge**
    - Moderate difficulty (75-80% attainability) optimizes motivation
    - Too easy goals cause complacency; too hard goals cause abandonment
-   - **GoalPath Application:** Milestone structure should reflect progressive difficulty
+   - **LOCKED IN Application:** Milestone structure should reflect progressive difficulty
 
 3. **Goal Commitment**
    - Public commitment increases goal adherence by 35%
    - Self-set goals show 20% higher completion vs. assigned goals
-   - **GoalPath Application:** User-created goals + sharing features will improve adherence
+   - **LOCKED IN Application:** User-created goals + sharing features will improve adherence
 
 4. **Feedback Mechanisms**
    - Regular progress feedback increases performance by 40%
    - Immediate feedback is 15% more effective than delayed feedback
-   - **GoalPath Application:** Daily notifications, progress tracking, streak visualization
+   - **LOCKED IN Application:** Daily notifications, progress tracking, streak visualization
 
 5. **Goal Interdependence**
    - Breaking large goals into milestones improves completion rates
    - Regular checkpoint achievement maintains motivation
-   - **GoalPath Application:** Milestone system directly addresses this need
+   - **LOCKED IN Application:** Milestone system directly addresses this need
 
 ### Strengths of This Paper
 
@@ -69,16 +69,16 @@ This landmark paper presents the most comprehensive review of goal-setting resea
 ⚠️ **Technology Factors:** Doesn't account for app interface design, notification fatigue  
 ⚠️ **Emotional Components:** Limited exploration of intrinsic vs. extrinsic motivation balance  
 
-### Relevance to GoalPath (9/10)
+### Relevance to LOCKED IN (9/10)
 
 **Why This Paper Is Critical:**
-This paper provides the theoretical foundation for GoalPath's entire goal-setting workflow. The specific and challenging goal principle directly informs:
+This paper provides the theoretical foundation for LOCKED IN's entire goal-setting workflow. The specific and challenging goal principle directly informs:
 - Goal creation UI (should enforce specificity)
 - Milestone design (breaking goals into manageable chunks)
 - Difficulty assessment (helping users set realistic timelines)
 - Progress tracking (emphasizing quantifiable metrics)
 
-The paper's emphasis on feedback and commitment mechanisms validates GoalPath's:
+The paper's emphasis on feedback and commitment mechanisms validates LOCKED IN's:
 - Push notification strategy
 - Progress analytics dashboard
 - Streak visualization
@@ -113,36 +113,36 @@ The paper's emphasis on feedback and commitment mechanisms validates GoalPath's:
 ### Abstract Summary
 This landmark empirical study examines how habits form in real-world contexts by tracking 82 participants over 12 weeks as they establish new daily habits. Using experience sampling and behavioral tracking, the authors found that automaticity (the feeling of behavior requiring no conscious effort) develops through a power-law curve, with most habits reaching asymptotic automaticity around 66 days. Critically, the study demonstrates substantial individual variation (ranging from 18 to 254 days) based on habit type, complexity, and person-specific factors. This paper revolutionized habit formation understanding by providing empirical data replacing the widely-cited (but unsourced) "21-day" myth with scientifically-grounded evidence.
 
-### Key Findings Relevant to GoalPath
+### Key Findings Relevant to LOCKED IN
 
 1. **Habit Formation Timeline (The 66-Day Plateau)**
    - Average: 66 days to reach automaticity
    - Range: 18-254 days (extreme variation)
    - Complex habits: Average 91 days
    - Simple habits: Average 42 days
-   - **GoalPath Application:** Habit streaks should be visualized with 10-week milestones; notification strategy should account for critical period (weeks 2-6)
+   - **LOCKED IN Application:** Habit streaks should be visualized with 10-week milestones; notification strategy should account for critical period (weeks 2-6)
 
 2. **Missing One Day Effect**
    - Missing one day reduces automaticity by 17%
    - Missing two consecutive days: 34% reduction
    - Requires 8 additional days to recover automaticity
-   - **GoalPath Application:** Streaks system critical; recovery support after lapses needed
+   - **LOCKED IN Application:** Streaks system critical; recovery support after lapses needed
 
 3. **Habit Type Matters**
    - Physical activity habits: 84 days average
    - Dietary habits: 71 days average
    - Meditation/mindfulness: 58 days average
-   - **GoalPath Application:** Different habit types need different notification frequencies and difficulty curves
+   - **LOCKED IN Application:** Different habit types need different notification frequencies and difficulty curves
 
 4. **Consistency vs. Frequency**
    - Consistency more important than frequency
    - 4 times/week for 66 days > 2 times/day for 33 days
-   - **GoalPath Application:** Daily logging more motivating than completion requirement; frequency flexibility
+   - **LOCKED IN Application:** Daily logging more motivating than completion requirement; frequency flexibility
 
 5. **Contextual Cuing**
    - Habits anchored to existing routines form 30% faster
    - "If-then" implementation intentions increase habit formation by 25%
-   - **GoalPath Application:** Habit creation should encourage linking to existing routines, time-based cues
+   - **LOCKED IN Application:** Habit creation should encourage linking to existing routines, time-based cues
 
 ### Strengths of This Paper
 
@@ -151,7 +151,7 @@ This landmark empirical study examines how habits form in real-world contexts by
 ✅ **Quantified Timelines:** Replaces myths with scientific evidence  
 ✅ **Individual Variation Data:** Acknowledges differences in habit formation speed  
 ✅ **Practical Metrics:** Provides implementable thresholds (66 days, automaticity measurement)  
-✅ **Digital Era Friendly:** Methodology involves app-based tracking (scalable to GoalPath)  
+✅ **Digital Era Friendly:** Methodology involves app-based tracking (scalable to LOCKED IN)  
 ✅ **Replicability:** Strong methodology, clear participant selection  
 
 ### Limitations & Critiques
@@ -165,16 +165,16 @@ This landmark empirical study examines how habits form in real-world contexts by
 ⚠️ **Motivation Type:** Doesn't distinguish intrinsic vs. extrinsic motivation effects  
 ⚠️ **Digital Distraction:** Pre-smartphone era; doesn't account for notification fatigue from multiple apps  
 
-### Relevance to GoalPath (9.5/10)
+### Relevance to LOCKED IN (9.5/10)
 
 **Why This Paper Is Critical:**
-This paper provides the scientific basis for GoalPath's habit tracking system. The 66-day finding directly informs:
+This paper provides the scientific basis for LOCKED IN's habit tracking system. The 66-day finding directly informs:
 - Streak visualization (critical period weeks 2-6)
 - Notification strategy (must prevent lapses in critical period)
 - Progress milestones (10-week goal realistic)
 - Habit type differentiation (different habits need different support)
 
-The paper's evidence on missing days validates GoalPath's:
+The paper's evidence on missing days validates LOCKED IN's:
 - Daily logging interface
 - Streak system with visual rewards
 - Recovery support after lapses
@@ -213,11 +213,11 @@ The paper's evidence on missing days validates GoalPath's:
 - Explains consistency is more important than intensity
 - Provides contextual cuing strategy for sustainable behavior
 
-Together: **Goal Setting** (what to achieve) + **Habit Formation** (how to sustain) = **GoalPath's core value proposition**
+Together: **Goal Setting** (what to achieve) + **Habit Formation** (how to sustain) = **LOCKED IN's core value proposition**
 
 ---
 
-## Synthesis: Applying Both Papers to GoalPath Architecture
+## Synthesis: Applying Both Papers to LOCKED IN Architecture
 
 ### Goals Module (Locke & Latham Principles)
 ```
@@ -254,11 +254,11 @@ Long-term Goal (Locke & Latham)
 
 ---
 
-## How GoalPath's Features Map to Research Evidence
+## How LOCKED IN's Features Map to Research Evidence
 
 ### Feature Alignment Matrix
 
-| GoalPath Feature | Based On | Research Finding | Expected Impact |
+| LOCKED IN Feature | Based On | Research Finding | Expected Impact |
 |------------------|----------|------------------|-----------------|
 | Goal Specificity Enforcement | Locke & Latham | Specific goals 25% better | Higher completion rate |
 | Milestone Breakdown | Locke & Latham | Interdependence improves performance | Reduced abandonment |
@@ -271,7 +271,7 @@ Long-term Goal (Locke & Latham)
 
 ---
 
-## Research Gaps & GoalPath Innovation
+## Research Gaps & LOCKED IN Innovation
 
 ### What the Research Shows
 ✅ Goals should be specific and challenging  
@@ -286,8 +286,8 @@ Long-term Goal (Locke & Latham)
 ❓ Social accountability effects in digital contexts  
 ❓ Cross-goal interference (pursuing multiple goals simultaneously)  
 
-### GoalPath's Contribution
-By implementing both theories in a mobile-first, data-driven platform, GoalPath addresses these gaps by:
+### LOCKED IN's Contribution
+By implementing both theories in a mobile-first, data-driven platform, LOCKED IN addresses these gaps by:
 1. Testing notification frequency thresholds empirically
 2. Validating streak system's impact on habit formation
 3. Measuring cross-goal effects in real users
@@ -297,16 +297,16 @@ By implementing both theories in a mobile-first, data-driven platform, GoalPath 
 
 ## Literature Review Conclusion
 
-These two papers form the theoretical foundation of GoalPath:
+These two papers form the theoretical foundation of LOCKED IN:
 
 1. **Locke & Latham (2002)** provides evidence that specific, challenging, milestone-based goals drive performance
 2. **Lally et al. (2010)** provides evidence that daily habits require 66 days of consistent behavior to automatize
 
-Together, they justify GoalPath's architecture: a mobile platform that helps users set specific, progressively challenging goals and build daily habits to achieve them through consistent progress feedback and contextual cuing.
+Together, they justify LOCKED IN's architecture: a mobile platform that helps users set specific, progressively challenging goals and build daily habits to achieve them through consistent progress feedback and contextual cuing.
 
 The research is clear: **systematic goal-setting + consistent habit execution = sustainable personal growth.**
 
-GoalPath's technology merely automates and optimizes what behavioral science has already proven works.
+LOCKED IN's technology merely automates and optimizes what behavioral science has already proven works.
 
 ---
 

@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
       <>
         <div style={{ marginBottom: 24, textAlign: 'center' }}>
           <Mono size={11} style={{ color: GP.amber, letterSpacing: 3, display: 'block', marginBottom: 12 }}>
-            ◆ GOALPATH · DONE
+            ◆ LOCKED IN · DONE
           </Mono>
           <Sans size={26} weight={700} style={{ display: 'block', marginBottom: 8 }}>Password reset</Sans>
           <Sans size={14} style={{ color: GP.inkDim, display: 'block', lineHeight: 1.6 }}>
@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
     <>
       <div style={{ marginBottom: 28, textAlign: 'center' }}>
         <Mono size={11} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
-          ◆ GOALPATH · RECOVER
+          ◆ LOCKED IN · RECOVER
         </Mono>
         <Sans size={26} weight={700} style={{ display: 'block', marginBottom: 8 }}>Forgot password</Sans>
         <Sans size={14} style={{ color: GP.inkDim, display: 'block', lineHeight: 1.6 }}>
@@ -135,7 +135,7 @@ export default function ForgotPasswordPage() {
         <GPInput label="Username" value={form.username} onChange={set('username')}
           placeholder="yourname" error={errors.username} />
         <GPInput label="Recovery Code" value={form.recoveryCode} onChange={set('recoveryCode')}
-          placeholder="GP-XXXX-XXXX-XXXX" error={errors.recoveryCode} />
+          placeholder="LI-XXXX-XXXX-XXXX" error={errors.recoveryCode} />
         <GPInput label="New Password" value={form.newPassword} onChange={set('newPassword')}
           type="password" placeholder="Min. 8 characters" error={errors.newPassword} />
 

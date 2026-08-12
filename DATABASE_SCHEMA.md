@@ -1,4 +1,4 @@
-# GoalPath Database Schema
+# LOCKED IN Database Schema
 
 ## Database: MongoDB (NoSQL Document Database)
 

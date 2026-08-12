@@ -1,7 +1,7 @@
-# GoalPath Project - 12-Week Gantt Chart & Timeline
+# LOCKED IN Project - 12-Week Gantt Chart & Timeline
 
 ## Project Overview
-- **Project Name:** GoalPath - Mobile Goal & Habit Tracking Application
+- **Project Name:** LOCKED IN - Mobile Goal & Habit Tracking Application
 - **Project Duration:** 12 weeks
 - **Start Date:** [Week 1]
 - **End Date:** [Week 12]

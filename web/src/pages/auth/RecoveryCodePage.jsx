@@ -40,7 +40,7 @@ export default function RecoveryCodePage() {
       <div style={{ width: '100%', maxWidth: 480 }}>
         <div style={{ marginBottom: 28, textAlign: 'center' }}>
           <Mono size={11} style={{ color: GP.amber, letterSpacing: 3, display: 'block', marginBottom: 12 }}>
-            ◆ GOALPATH · SAVE THIS
+            ◆ LOCKED IN · SAVE THIS
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 8 }}>
             Your recovery code

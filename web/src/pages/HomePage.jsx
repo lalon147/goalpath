@@ -41,7 +41,7 @@ export default function HomePage() {
         position: 'relative',
       }}>
         <div style={{ fontFamily: GP.mono, fontSize: 10, color: GP.cyan, letterSpacing: 3 }}>
-          GOALPATH
+          LOCKED IN
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button
@@ -175,7 +175,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <div style={{ padding: '16px 24px', textAlign: 'center', borderTop: `1px solid ${GP.line}` }}>
-        <Mono size={7} dim>◈ GOALPATH · STAY ON PATH</Mono>
+        <Mono size={7} dim>◈ LOCKED IN · STAY ON PATH</Mono>
       </div>
     </div>
   );

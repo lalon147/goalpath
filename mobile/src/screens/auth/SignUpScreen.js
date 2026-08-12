@@ -134,7 +134,7 @@ export default function SignUpScreen({ navigation }) {
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <Text style={styles.hudLabel}>◆ GOALPATH · REGISTER</Text>
+            <Text style={styles.hudLabel}>◆ LOCKED IN · REGISTER</Text>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>
               Pick a username and a password. That is all — no email, no real name.

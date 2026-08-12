@@ -91,7 +91,7 @@ app.get('/api/health', (req, res) => {
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to GoalPath Backend API',
+    message: 'Welcome to LOCKED IN Backend API',
     version: '1.0.0',
     endpoints: {
       health: '/api/health',

@@ -37,7 +37,7 @@ export default function SignInScreen({ navigation }) {
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
           <View style={styles.header}>
-            <Text style={styles.hudLabel}>◆ GOALPATH · AUTH</Text>
+            <Text style={styles.hudLabel}>◆ LOCKED IN · AUTH</Text>
             <Text style={styles.title}>Sign In</Text>
             <Text style={styles.subtitle}>Resume your mission.</Text>
           </View>

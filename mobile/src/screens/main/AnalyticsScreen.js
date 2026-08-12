@@ -29,7 +29,7 @@ export default function AnalyticsScreen() {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         <View style={styles.header}>
-          <Mono size={8} accent>◆ GOALPATH · INTEL</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · INTEL</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Analytics</Sans>
         </View>
 

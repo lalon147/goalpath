@@ -105,7 +105,7 @@ export default function ResetPasswordPage() {
       <div style={{ width: '100%', maxWidth: 400 }}>
         <div style={{ marginBottom: 36, textAlign: 'center' }}>
           <Mono size={11} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
-            ◆ GOALPATH · RECOVERY
+            ◆ LOCKED IN · RECOVERY
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>New Password</Sans>
           <Sans size={14} style={{ color: GP.inkDim, display: 'block' }}>

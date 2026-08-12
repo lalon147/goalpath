@@ -43,7 +43,7 @@ export default function ProfileScreen({ navigation }) {
       // No expo-file-system in this project, so the export rides out through the
       // system share sheet — the user picks Files, Mail, Notes, wherever.
       await Share.share({
-        title: 'GoalPath data export',
+        title: 'LOCKED IN data export',
         message: JSON.stringify(payload, null, 2),
       });
     } catch (err) {
@@ -63,7 +63,7 @@ export default function ProfileScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
         <View style={styles.header}>
-          <Mono size={8} accent>◆ GOALPATH · YOU</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · YOU</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Profile</Sans>
         </View>
 
@@ -132,7 +132,7 @@ export default function ProfileScreen({ navigation }) {
           <MenuItem label="Log Out" onPress={handleLogout} danger />
         </GPBox>
 
-        <Mono size={8} dim style={styles.version}>GOALPATH v1.0.0</Mono>
+        <Mono size={8} dim style={styles.version}>LOCKED IN v1.0.0</Mono>
       </ScrollView>
     </SafeAreaView>
   );

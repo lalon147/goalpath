@@ -87,7 +87,7 @@ export default function NotificationSettingsScreen({ navigation }) {
         setBlocked(false);
       } else {
         setBlocked(true);
-        setStatus('Saved, but notifications are blocked for GoalPath.');
+        setStatus('Saved, but notifications are blocked for LOCKED IN.');
       }
     } finally {
       setSaving(false);
@@ -103,7 +103,7 @@ export default function NotificationSettingsScreen({ navigation }) {
         </TouchableOpacity>
 
         <View style={styles.header}>
-          <Mono size={8} accent>◆ GOALPATH · SETTINGS</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · SETTINGS</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Notifications</Sans>
         </View>
 
@@ -166,7 +166,7 @@ export default function NotificationSettingsScreen({ navigation }) {
           <GPBox style={[styles.card, { borderColor: GP.amber }]}>
             <Mono size={9} style={{ color: GP.amber, letterSpacing: 1 }}>◉ NOTIFICATIONS BLOCKED</Mono>
             <Sans size={13} style={{ color: GP.inkDim, marginTop: 8, lineHeight: 20 }}>
-              GoalPath cannot show reminders until you allow notifications in your
+              LOCKED IN cannot show reminders until you allow notifications in your
               device settings.
             </Sans>
             <TouchableOpacity onPress={() => Linking.openSettings()} style={{ marginTop: 12 }}>

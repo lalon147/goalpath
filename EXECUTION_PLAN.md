@@ -1,7 +1,7 @@
-# GoalPath 12-Week Delivery Sprint Plan
+# LOCKED IN 12-Week Delivery Sprint Plan
 
 ## Executive Summary
-- **Project:** GoalPath (Personal Goal & Habit Tracking Mobile Application)
+- **Project:** LOCKED IN (Personal Goal & Habit Tracking Mobile Application)
 - **Timeline:** 12 weeks 
 - **Tech Stack:** React Native (mobile) + Node.js/Express (backend) + MongoDB (database)
 - **Target:** Adults 18+

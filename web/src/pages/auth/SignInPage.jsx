@@ -51,7 +51,7 @@ export default function SignInPage() {
         {/* Header */}
         <div style={{ marginBottom: 40, textAlign: 'center' }}>
           <Mono size={11} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
-            ◆ GOALPATH · AUTH
+            ◆ LOCKED IN · AUTH
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>Sign In</Sans>
           <Sans size={14} style={{ color: GP.inkDim, display: 'block' }}>Resume your mission.</Sans>

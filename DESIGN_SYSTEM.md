@@ -1,4 +1,4 @@
-# GoalPath Design System
+# LOCKED IN Design System
 
 ## 1. Color Palette
 
@@ -306,7 +306,7 @@ Close button
 ```
 ┌─────────────────────────────┐
 │                             │
-│       GoalPath Logo         │
+│       LOCKED IN Logo         │
 │                             │
 │    "Set & Achieve Goals"    │
 │                             │

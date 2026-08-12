@@ -122,7 +122,7 @@ export default function WeekLogPage() {
     <Layout>
       <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
         <div>
-          <Mono size={10} accent style={{ display: 'block', letterSpacing: 2 }}>◆ GOALPATH · LOG</Mono>
+          <Mono size={10} accent style={{ display: 'block', letterSpacing: 2 }}>◆ LOCKED IN · LOG</Mono>
           <Sans size={24} weight={700} style={{ display: 'block', marginTop: 4 }}>This week</Sans>
         </div>
         <button

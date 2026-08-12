@@ -95,7 +95,7 @@ export default function SignUpPage() {
       <div style={{ width: '100%', maxWidth: 440 }}>
         <div style={{ marginBottom: 32, textAlign: 'center' }}>
           <Mono size={11} accent style={{ letterSpacing: 3, display: 'block', marginBottom: 12 }}>
-            ◆ GOALPATH · REGISTER
+            ◆ LOCKED IN · REGISTER
           </Mono>
           <Sans size={28} weight={700} style={{ display: 'block', marginBottom: 6 }}>Create Account</Sans>
           <Sans size={14} style={{ color: GP.inkDim, display: 'block' }}>

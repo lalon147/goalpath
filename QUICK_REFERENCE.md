@@ -1,4 +1,4 @@
-# GoalPath - Quick Reference Guide
+# LOCKED IN - Quick Reference Guide
 
 
 
@@ -19,7 +19,7 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                    GOALPATH SYSTEM                            │
+│                    LOCKED IN SYSTEM                            │
 ├──────────────────────────────────────────────────────────────┤
 │                                                               │
 │  📱 MOBILE (React Native + Expo)                             │

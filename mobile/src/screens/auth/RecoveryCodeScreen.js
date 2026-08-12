@@ -28,7 +28,7 @@ export default function RecoveryCodeScreen() {
 
   const share = () => {
     Share.share({
-      message: `GoalPath recovery code for @${user?.username}: ${recoveryCode}`,
+      message: `LOCKED IN recovery code for @${user?.username}: ${recoveryCode}`,
     }).catch(() => {});
   };
 
@@ -37,7 +37,7 @@ export default function RecoveryCodeScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
 
         <View style={styles.header}>
-          <Text style={styles.hudLabel}>◆ GOALPATH · SAVE THIS</Text>
+          <Text style={styles.hudLabel}>◆ LOCKED IN · SAVE THIS</Text>
           <Text style={styles.title}>Your recovery code</Text>
           <Text style={styles.subtitle}>
             You signed up with no email, so this code is the only way to get back

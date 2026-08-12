@@ -77,7 +77,7 @@ export const scheduleDailyReminder = async (time) => {
   await Notifications.scheduleNotificationAsync({
     identifier: DAILY_REMINDER_ID,
     content: {
-      title: 'GoalPath',
+      title: 'LOCKED IN',
       body: 'Time to log today’s habits.',
       data: { kind: 'daily-reminder' },
     },

@@ -1,4 +1,4 @@
-# GoalPath API Specification
+# LOCKED IN API Specification
 
 ## Base URL
 ```

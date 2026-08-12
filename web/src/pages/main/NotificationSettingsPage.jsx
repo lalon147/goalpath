@@ -184,7 +184,7 @@ export default function NotificationSettingsPage() {
             marginBottom: 24,
           }}>
             <Sans size={13} color={GP.inkDim}>
-              These settings are stored on your account. The GoalPath mobile app delivers
+              These settings are stored on your account. The LOCKED IN mobile app delivers
               the daily reminder notification.
             </Sans>
           </div>

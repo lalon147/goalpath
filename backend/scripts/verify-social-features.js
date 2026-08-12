@@ -54,7 +54,11 @@ const run = async () => {
   console.log('signup (username only, no PII)');
   const a = await call('POST', '/auth/signup', { body: { username: 'alice', password: 'Password1' } });
   a.status === 201 ? ok('creates an account') : bad('signup', JSON.stringify(a.body));
-  a.body?.data?.recoveryCode?.startsWith('GP-') ? ok('returns a one-time recovery code') : bad('recovery code missing');
+  // Matched by shape rather than by the brand prefix, which is display text and
+  // has already changed once (GP- to LI-).
+  /^[A-Z]{2}(-[A-Z0-9]{4}){3}$/.test(a.body?.data?.recoveryCode || '')
+    ? ok(`returns a one-time recovery code (${a.body.data.recoveryCode.slice(0, 3)}…)`)
+    : bad('recovery code missing or malformed', a.body?.data?.recoveryCode);
   !a.body?.data?.user?.email ? ok('no email stored') : bad('email leaked');
   const aliceTok = a.body.data.tokens.accessToken;
   const aliceCode = a.body.data.recoveryCode;

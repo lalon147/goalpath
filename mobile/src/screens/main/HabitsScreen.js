@@ -64,7 +64,7 @@ export default function HabitsScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <GPRow style={styles.header}>
         <View>
-          <Mono size={8} accent>◆ GOALPATH · LOG</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · LOG</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Habits</Sans>
         </View>
         <TouchableOpacity

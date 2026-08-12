@@ -119,7 +119,7 @@ export default function GoalsScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <GPRow style={styles.header}>
         <View>
-          <Mono size={8} accent>◆ GOALPATH · PATH</Mono>
+          <Mono size={8} accent>◆ LOCKED IN · PATH</Mono>
           <Sans size={20} weight="700" style={{ marginTop: 2 }}>Goals</Sans>
         </View>
         <TouchableOpacity

@@ -1,4 +1,4 @@
-# GoalPath - System Architecture & Design Document
+# LOCKED IN - System Architecture & Design Document
 
 ## 1. System Architecture Overview
 

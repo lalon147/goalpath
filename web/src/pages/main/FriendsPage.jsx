@@ -178,7 +178,7 @@ export default function FriendsPage() {
   return (
     <Layout>
       <div style={{ marginBottom: 20 }}>
-        <Mono size={10} accent style={{ display: 'block', letterSpacing: 2 }}>◆ GOALPATH · SOCIAL</Mono>
+        <Mono size={10} accent style={{ display: 'block', letterSpacing: 2 }}>◆ LOCKED IN · SOCIAL</Mono>
         <Sans size={24} weight={700} style={{ display: 'block', marginTop: 4 }}>Friends</Sans>
       </div>
 
