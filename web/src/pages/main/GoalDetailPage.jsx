@@ -185,6 +185,24 @@ export default function GoalDetailPage() {
           </svg>
         </div>
 
+        {/* 1% better every day */}
+        <button
+          type="button"
+          onClick={() => navigate(`/goals/${id}/practice`, { state: { goal } })}
+          style={{
+            display: 'block', width: '100%', textAlign: 'left', cursor: 'pointer',
+            background: GP.bg2, border: `1px solid ${GP.lime}`, borderRadius: 4,
+            padding: 16, marginBottom: 10,
+          }}
+        >
+          <Mono size={10} style={{ color: GP.lime, display: 'block', letterSpacing: 1.5 }}>
+            ◆ 1% BETTER EVERY DAY ▸
+          </Mono>
+          <Sans size={13} style={{ color: GP.inkDim, display: 'block', marginTop: 5 }}>
+            Turn this goal into something you can log daily
+          </Sans>
+        </button>
+
         {/* Shared goal */}
         <button
           type="button"

@@ -11,6 +11,7 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import RecoveryCodePage from './pages/auth/RecoveryCodePage';
 import FriendsPage from './pages/main/FriendsPage';
 import WeekLogPage from './pages/main/WeekLogPage';
+import DailyPracticePage from './pages/main/DailyPracticePage';
 import GoalMembersPage from './pages/main/GoalMembersPage';
 import DashboardPage from './pages/main/DashboardPage';
 import GoalsPage from './pages/main/GoalsPage';
@@ -59,6 +60,7 @@ export default function App() {
       <Route path="/habits/new" element={<PrivateRoute><CreateHabitPage /></PrivateRoute>} />
       <Route path="/analytics" element={<PrivateRoute><AnalyticsPage /></PrivateRoute>} />
       <Route path="/goals/:id/members" element={<PrivateRoute><GoalMembersPage /></PrivateRoute>} />
+      <Route path="/goals/:id/practice" element={<PrivateRoute><DailyPracticePage /></PrivateRoute>} />
       <Route path="/friends" element={<PrivateRoute><FriendsPage /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
       <Route path="/profile/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
