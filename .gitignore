@@ -37,3 +37,15 @@ ngrok.zip
 Thumbs.db
 .vscode/
 .idea/
+
+# Security assessment output — kept local. The report describes where the app
+# is still soft (deferred items, accepted risks), which is not something to
+# publish from a public repository.
+GoalPath_Security_Assessment_*.pdf
+SECURITY_ASSESSMENT_SUMMARY.md
+
+# Coursework documents and their generator — not part of the application.
+*.docx
+*.pptx
+Individual_reflection_*
+generate_presentation.py
