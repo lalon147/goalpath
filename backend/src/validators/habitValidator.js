@@ -1,7 +1,10 @@
 const Joi = require('joi');
 const { validate } = require('./authValidator');
+const Habit = require('../models/Habit');
 
-const habitCategories = ['health', 'learning', 'mindfulness', 'productivity', 'fitness', 'social'];
+// Single source of truth, taken from the schema itself. These were two separate
+// literals that disagreed about whether "no category" was allowed.
+const habitCategories = Habit.CATEGORIES;
 
 exports.createHabitSchema = Joi.object({
   goalId: Joi.string().hex().length(24),
