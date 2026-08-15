@@ -1,6 +1,6 @@
 # Migration & Deployment Records
 
-This folder is the written record of every infrastructure change made to GoalPath
+This folder is the written record of every infrastructure change made to LOCKED IN
 across its three platforms: **Render** (backend API), **Vercel** (web app), and
 **MongoDB Atlas** (database).
 

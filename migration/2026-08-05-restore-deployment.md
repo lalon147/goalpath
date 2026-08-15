@@ -46,7 +46,7 @@ Existing data was intact — 5 collections, 6 user records preserved.
   previously deployed bundle would have kept calling the old URL forever.
 - Deleted two abandoned projects from earlier failed attempts, `goalpath` and
   `goalpath-t67s`, with the owner's approval. `goalpath-web` is now the only
-  GoalPath project.
+  LOCKED IN project.
 
 ### MongoDB Atlas
 - No schema or data changes. Cluster resumed; connectivity from Render confirmed.
