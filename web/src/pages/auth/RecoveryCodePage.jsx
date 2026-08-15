@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { acknowledgeRecoveryCode } from '../../store/slices/authSlice';
 import { GP } from '../../theme/GP';
@@ -14,9 +15,22 @@ import { GPButton, Mono, Sans } from '../../components/primitives';
  */
 export default function RecoveryCodePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { recoveryCode, user } = useSelector((s) => s.auth);
   const [confirmed, setConfirmed] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  /**
+   * Signup never navigates — this screen is rendered in front of the router
+   * while the code is unacknowledged — so the URL is still /signup underneath.
+   * Clearing the code alone would drop the user back onto the signup form they
+   * just completed, so the destination has to be set here, matching where
+   * signing in lands.
+   */
+  const done = () => {
+    dispatch(acknowledgeRecoveryCode());
+    navigate('/dashboard', { replace: true });
+  };
 
   const copy = async () => {
     try {
@@ -115,7 +129,7 @@ export default function RecoveryCodePage() {
         </label>
 
         <GPButton
-          onClick={() => dispatch(acknowledgeRecoveryCode())}
+          onClick={done}
           disabled={!confirmed}
           style={{ width: '100%', opacity: confirmed ? 1 : 0.4 }}
         >
