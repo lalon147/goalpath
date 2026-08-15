@@ -1,11 +1,43 @@
 require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const logger = require('./utils/logger');
 
 const app = express();
+
+// ============================================
+// Configuration Checks
+// ============================================
+
+// Anything the app cannot serve a single authenticated request without. A
+// missing JWT secret used to leave the process healthy on /api/health and
+// throwing on the first sign-in, which reads as an application bug rather than
+// a bad deploy — so it is checked here alongside the database URI.
+const REQUIRED_ENV = ['MONGODB_URI', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];
+const missingEnv = REQUIRED_ENV.filter(key => !process.env[key]);
+
+if (missingEnv.length) {
+  logger.error(
+    `❌ Missing required environment variable(s): ${missingEnv.join(', ')}. ` +
+    'Configure them in the environment before starting the server.'
+  );
+  process.exit(1);
+}
+
+// Warned rather than enforced on purpose. A short secret is weak, but refusing
+// to boot over it would take a running deployment down on upgrade — which is a
+// worse outcome than serving with a loud warning until it is rotated.
+['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'].forEach(key => {
+  if (process.env[key].length < 32) {
+    logger.error(
+      `⚠️  ${key} is only ${process.env[key].length} characters. Use at least 32 ` +
+      '(e.g. `openssl rand -hex 32`) and redeploy — short secrets are brute-forceable.'
+    );
+  }
+});
 
 // Surface crashes that would otherwise kill the process without explanation.
 process.on('unhandledRejection', err => {
@@ -22,9 +54,45 @@ process.on('uncaughtException', err => {
 // Middleware Setup
 // ============================================
 
+// Render terminates TLS and forwards to this process one hop away. Without
+// this, req.ip is the proxy's address for every caller, so the rate limiters
+// below bucket the whole world together and throttle nobody. Pinned to 1 hop
+// rather than `true`: trusting the whole chain would let a client forge
+// X-Forwarded-For and pick its own rate-limit key.
+app.set('trust proxy', 1);
+
+// Security headers: HSTS, nosniff, frameguard, and no x-powered-by.
+app.use(helmet({
+  // This API is consumed cross-origin by the web and mobile clients by design,
+  // so the default same-origin resource policy would be the wrong default here.
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
+
 // CORS Configuration
+//
+// Fails closed. The wildcard fallback that used to live here combined with
+// `credentials: true` meant a deploy that simply forgot CORS_ORIGIN silently
+// began accepting credentialed requests from any origin, with nothing in the
+// boot log to say so.
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim()).filter(Boolean)
+  : null;
+
+if (!corsOrigins) {
+  if (process.env.NODE_ENV === 'production') {
+    logger.error(
+      '❌ CORS_ORIGIN is not set in production. Refusing all browser origins ' +
+      'until it is configured — set it to your web app URL and redeploy.'
+    );
+  } else {
+    logger.info('ℹ️  CORS_ORIGIN not set; allowing any origin (development only).');
+  }
+}
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
+  // An empty list in production rejects every browser origin. Native clients
+  // send no Origin header at all and are unaffected either way.
+  origin: corsOrigins || (process.env.NODE_ENV === 'production' ? [] : '*'),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -51,11 +119,7 @@ app.use(limiter);
 // Database Connection
 // ============================================
 
-if (!process.env.MONGODB_URI) {
-  logger.error('❌ MONGODB_URI is not set. Configure it in the environment before starting the server.');
-  process.exit(1);
-}
-
+// MONGODB_URI presence is asserted in the configuration checks at the top.
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     logger.info('✅ MongoDB Atlas connected successfully');
@@ -177,12 +241,30 @@ app.use((err, req, res, next) => {
     });
   }
 
-  // Default error
-  res.status(err.status || 500).json({
+  // Errors raised deliberately by a controller carry a 4xx status and a message
+  // written for the user, so those still pass through as-is.
+  const status = err.status || 500;
+
+  if (status < 500) {
+    return res.status(status).json({
+      success: false,
+      error: {
+        code: err.code || 'REQUEST_ERROR',
+        message: err.message || 'Request failed'
+      }
+    });
+  }
+
+  // Anything unhandled gets a fixed message. Driver and Mongoose errors name
+  // collections, fields and sometimes connection details, and the client has no
+  // use for any of it — the full error is already in the log line above.
+  logger.error('Unhandled error:', err && err.stack ? err.stack : err);
+
+  return res.status(500).json({
     success: false,
     error: {
-      code: err.code || 'INTERNAL_ERROR',
-      message: err.message || 'Internal server error'
+      code: 'INTERNAL_ERROR',
+      message: 'Internal server error'
     }
   });
 });
@@ -193,26 +275,27 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  logger.info(`🚀 Backend running on http://localhost:${PORT}`);
-  logger.info(`📝 Environment: ${process.env.NODE_ENV}`);
-});
+// Under test the app is driven in-process by supertest, which binds its own
+// ephemeral port. Listening here as well would leave a handle open and make the
+// suite hang after the last assertion.
+const server = process.env.NODE_ENV === 'test'
+  ? null
+  : app.listen(PORT, () => {
+    logger.info(`🚀 Backend running on http://localhost:${PORT}`);
+    logger.info(`📝 Environment: ${process.env.NODE_ENV}`);
+  });
 
 // Graceful Shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM signal received: closing HTTP server');
+const shutdown = (signal) => () => {
+  logger.info(`${signal} signal received: closing HTTP server`);
+  if (!server) return process.exit(0);
   server.close(() => {
     logger.info('HTTP server closed');
     process.exit(0);
   });
-});
+};
 
-process.on('SIGINT', () => {
-  logger.info('SIGINT signal received: closing HTTP server');
-  server.close(() => {
-    logger.info('HTTP server closed');
-    process.exit(0);
-  });
-});
+process.on('SIGTERM', shutdown('SIGTERM'));
+process.on('SIGINT', shutdown('SIGINT'));
 
 module.exports = app;

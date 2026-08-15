@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToken, setToken, clearTokens } from '../../services/tokenStore';
 import { authAPI, userAPI } from '../../services/api';
 
 // A timed-out or unreachable request has no `response`, so falling straight
@@ -16,8 +16,8 @@ const errorMessage = (err, fallback) => {
 export const signin = createAsyncThunk('auth/signin', async (credentials, { rejectWithValue }) => {
   try {
     const { data } = await authAPI.signin(credentials);
-    await AsyncStorage.setItem('accessToken', data.data.tokens.accessToken);
-    await AsyncStorage.setItem('refreshToken', data.data.tokens.refreshToken);
+    await setToken('accessToken', data.data.tokens.accessToken);
+    await setToken('refreshToken', data.data.tokens.refreshToken);
     return data.data;
   } catch (err) {
     return rejectWithValue(errorMessage(err, 'Sign in failed'));
@@ -27,8 +27,8 @@ export const signin = createAsyncThunk('auth/signin', async (credentials, { reje
 export const signup = createAsyncThunk('auth/signup', async (userData, { rejectWithValue }) => {
   try {
     const { data } = await authAPI.signup(userData);
-    await AsyncStorage.setItem('accessToken', data.data.tokens.accessToken);
-    await AsyncStorage.setItem('refreshToken', data.data.tokens.refreshToken);
+    await setToken('accessToken', data.data.tokens.accessToken);
+    await setToken('refreshToken', data.data.tokens.refreshToken);
     return data.data;
   } catch (err) {
     return rejectWithValue(errorMessage(err, 'Sign up failed'));
@@ -37,17 +37,17 @@ export const signup = createAsyncThunk('auth/signup', async (userData, { rejectW
 
 export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
   try {
-    const refreshToken = await AsyncStorage.getItem('refreshToken');
+    const refreshToken = await getToken('refreshToken');
     await authAPI.logout(refreshToken);
-    await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+    await clearTokens();
   } catch (err) {
-    await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+    await clearTokens();
   }
 });
 
 export const loadUser = createAsyncThunk('auth/loadUser', async (_, { rejectWithValue }) => {
   try {
-    const token = await AsyncStorage.getItem('accessToken');
+    const token = await getToken('accessToken');
     if (!token) return rejectWithValue('No token');
     const { data } = await userAPI.getProfile();
     return data.data;

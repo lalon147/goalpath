@@ -14,7 +14,13 @@ const auth = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    // Algorithm pinned rather than inferred. jsonwebtoken@9 already refuses
+    // `alg: none` and infers HMAC-only from a string key, so this is belt and
+    // braces — but it makes the guarantee a property of this code rather than
+    // of whichever library version happens to be installed.
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET, {
+      algorithms: ['HS256']
+    });
     const user = await User.findById(decoded.id).select('-password -refreshTokens -resetTokens');
 
     if (!user) {

@@ -34,6 +34,38 @@ const forgotLimiter = limit(5);
 const resetLimiter = limit(10);
 // A recovery code is the whole credential, so guessing it must be expensive.
 const recoverLimiter = limit(10);
+
+// Credential endpoints. These ran on the global limiter alone, which is shared
+// with ordinary traffic and far too generous for password guessing — a client
+// could spend its whole quota on sign-in attempts. The per-account lockout in
+// the controller is the durable half of this; the limiter is what keeps the
+// attempts from arriving quickly in the first place.
+const signinLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Failed attempts are what deserve throttling. A person signing in
+  // successfully on several devices is not the traffic this is aimed at.
+  skipSuccessfulRequests: true,
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many sign-in attempts. Try again in a few minutes.' }
+  }
+});
+
+// Signup is throttled on a longer window: one person needs one account, and
+// bulk registration is the abuse case.
+const signupLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: { code: 'RATE_LIMITED', message: 'Too many accounts created. Try again later.' }
+  }
+});
 // Typing a username into a search-as-you-type field is chatty by nature; this
 // is only here so the endpoint cannot be used to enumerate the user table.
 const availabilityLimiter = rateLimit({
@@ -48,8 +80,8 @@ const availabilityLimiter = rateLimit({
 });
 
 router.get('/username-available', availabilityLimiter, authController.usernameAvailable);
-router.post('/signup', validate(signupSchema), authController.signup);
-router.post('/signin', validate(signinSchema), authController.signin);
+router.post('/signup', signupLimiter, validate(signupSchema), authController.signup);
+router.post('/signin', signinLimiter, validate(signinSchema), authController.signin);
 router.post('/refresh', validate(refreshSchema), authController.refresh);
 router.post('/logout', auth, authController.logout);
 router.post('/forgot-password', forgotLimiter, validate(forgotPasswordSchema), authController.forgotPassword);

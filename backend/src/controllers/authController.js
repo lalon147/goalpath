@@ -94,7 +94,7 @@ exports.signup = asyncHandler(async (req, res) => {
 
   const { accessToken, refreshToken, expiresIn } = generateTokens(user._id);
 
-  user.refreshTokens.push(refreshToken);
+  user.refreshTokens.push(User.hashRefreshToken(refreshToken));
   await user.save();
 
   return res.status(201).json({
@@ -116,13 +116,38 @@ exports.signin = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({ username: User.normalizeUsername(username) })
-    .select('+password');
+    .select('+password +failedLoginAttempts +lockedUntil');
 
-  if (!user || !(await user.comparePassword(password))) {
-    return res.status(401).json({
+  const invalid = () => res.status(401).json({
+    success: false,
+    error: { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password' }
+  });
+
+  if (!user) return invalid();
+
+  // Checked before the password so a locked account costs an attacker a bcrypt
+  // comparison they never get to make. Naming the state is a deliberate choice:
+  // it tells a locked-out owner what happened, and reveals nothing that
+  // /auth/username-available does not already confirm.
+  if (user.isLocked()) {
+    const minutes = Math.max(1, Math.ceil((user.lockedUntil - Date.now()) / 60000));
+    return res.status(429).json({
       success: false,
-      error: { code: 'INVALID_CREDENTIALS', message: 'Invalid username or password' }
+      error: {
+        code: 'ACCOUNT_LOCKED',
+        message: `Too many failed attempts. Try again in ${minutes} minute${minutes === 1 ? '' : 's'}.`
+      }
     });
+  }
+
+  if (!(await user.comparePassword(password))) {
+    user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+    if (user.failedLoginAttempts >= User.MAX_LOGIN_ATTEMPTS) {
+      user.lockedUntil = new Date(Date.now() + User.LOCK_DURATION_MS);
+      user.failedLoginAttempts = 0;
+    }
+    await user.save();
+    return invalid();
   }
 
   if (user.status !== 'active') {
@@ -134,7 +159,12 @@ exports.signin = asyncHandler(async (req, res) => {
 
   const { accessToken, refreshToken, expiresIn } = generateTokens(user._id);
 
-  user.refreshTokens.push(refreshToken);
+  // A successful sign-in clears the counter: the ten attempts are consecutive
+  // failures, not a lifetime tally.
+  user.failedLoginAttempts = 0;
+  user.lockedUntil = null;
+
+  user.refreshTokens.push(User.hashRefreshToken(refreshToken));
   if (user.refreshTokens.length > 5) {
     user.refreshTokens = user.refreshTokens.slice(-5);
   }
@@ -160,7 +190,9 @@ exports.refresh = asyncHandler(async (req, res) => {
 
   let decoded;
   try {
-    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, {
+      algorithms: ['HS256']
+    });
   } catch {
     return res.status(401).json({
       success: false,
@@ -169,7 +201,24 @@ exports.refresh = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findById(decoded.id);
-  if (!user || !user.refreshTokens.includes(refreshToken)) {
+  const hashed = User.hashRefreshToken(refreshToken);
+  let index = user ? user.refreshTokens.indexOf(hashed) : -1;
+
+  // Sessions that predate hashing have the raw JWT stored. Those are still
+  // honoured — logging every existing user out to land a storage change would
+  // be a worse outcome than the change is worth — and the entry is rewritten as
+  // a hash the first time it comes back, so the plaintext ages out of the
+  // database on its own as people use the app.
+  if (user && index === -1) {
+    const legacy = user.refreshTokens.indexOf(refreshToken);
+    if (legacy !== -1) {
+      user.refreshTokens[legacy] = hashed;
+      await user.save();
+      index = legacy;
+    }
+  }
+
+  if (!user || index === -1) {
     return res.status(401).json({
       success: false,
       error: { code: 'INVALID_TOKEN', message: 'Refresh token not recognised' }
@@ -306,7 +355,10 @@ exports.logout = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   if (refreshToken && user) {
-    user.refreshTokens = user.refreshTokens.filter(t => t !== refreshToken);
+    // Drops both forms: the hash of the presented token, and the token itself
+    // for sessions that predate hashing.
+    const hashed = User.hashRefreshToken(refreshToken);
+    user.refreshTokens = user.refreshTokens.filter(t => t !== hashed && t !== refreshToken);
     await user.save();
   }
 

@@ -87,8 +87,18 @@ const userSchema = new mongoose.Schema({
     enum: ['active', 'inactive', 'suspended'],
     default: 'active'
   },
+  // SHA-256 hashes, not the tokens themselves — same reasoning as resetTokens.
+  // A database dump must not hand over 30 days of live sessions for every user.
+  // Entries written before this change are raw JWTs; the refresh flow accepts
+  // either so existing sessions survive, and rewrites them as hashes on use.
   refreshTokens: [{ type: String }],
-  resetTokens: [resetTokenSchema]
+  resetTokens: [resetTokenSchema],
+
+  // Rate limiting is per-IP and resets when the instance restarts, which on a
+  // free tier is often. These two survive both, so throttling a password guesser
+  // does not depend on them keeping the same address or the process staying up.
+  failedLoginAttempts: { type: Number, default: 0, select: false },
+  lockedUntil: { type: Date, default: null, select: false }
 }, {
   timestamps: true
 });
@@ -98,9 +108,14 @@ userSchema.index({ email: 1 }, { unique: true, sparse: true });
 userSchema.index({ createdAt: -1 });
 userSchema.index({ status: 1 });
 
+// Configurable, with a floor. BCRYPT_ROUNDS was set in the environment but
+// never read, so raising it there silently did nothing; anything below 12 is
+// ignored rather than honoured, so the setting cannot be used to weaken hashing.
+const BCRYPT_ROUNDS = Math.max(12, parseInt(process.env.BCRYPT_ROUNDS, 10) || 12);
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = await bcrypt.hash(this.password, BCRYPT_ROUNDS);
   next();
 });
 
@@ -192,7 +207,27 @@ userSchema.statics.generateRecoveryCode = function () {
 };
 
 userSchema.statics.hashRecoveryCode = (code) =>
-  bcrypt.hash(normalizeRecoveryCode(code), 12);
+  bcrypt.hash(normalizeRecoveryCode(code), BCRYPT_ROUNDS);
+
+/**
+ * Refresh tokens are stored as a digest of the token, never the token itself.
+ *
+ * SHA-256 rather than bcrypt here, unlike passwords: the input is already
+ * high-entropy random data from jwt.sign, so there is nothing to brute-force
+ * and no reason to pay bcrypt's cost on every refresh. This mirrors how
+ * resetTokens are handled in the auth controller.
+ */
+userSchema.statics.hashRefreshToken = (token) =>
+  crypto.createHash('sha256').update(String(token)).digest('hex');
+
+/** How many wrong passwords in a row before the account stops answering. */
+userSchema.statics.MAX_LOGIN_ATTEMPTS = 10;
+/** How long it stays shut after that. */
+userSchema.statics.LOCK_DURATION_MS = 15 * 60 * 1000;
+
+userSchema.methods.isLocked = function () {
+  return Boolean(this.lockedUntil && this.lockedUntil > new Date());
+};
 
 userSchema.set('toJSON', { virtuals: true });
 userSchema.set('toObject', { virtuals: true });

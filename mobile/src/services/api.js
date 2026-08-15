@@ -1,5 +1,5 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToken, setToken, clearTokens } from './tokenStore';
 
 // Point at the hosted backend in all build modes. This must be a public URL:
 // the app runs on a phone, so localhost and LAN addresses are unreachable, and
@@ -15,7 +15,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem('accessToken');
+  const token = await getToken('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
@@ -27,13 +27,13 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {
-        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        const refreshToken = await getToken('refreshToken');
         const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
-        await AsyncStorage.setItem('accessToken', data.data.accessToken);
+        await setToken('accessToken', data.data.accessToken);
         original.headers.Authorization = `Bearer ${data.data.accessToken}`;
         return api(original);
       } catch {
-        await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+        await clearTokens();
       }
     }
     return Promise.reject(error);
